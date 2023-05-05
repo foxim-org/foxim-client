@@ -1,13 +1,12 @@
-![main workflow](https://github.com/zhongzhikeji/chat-client-letstalk/actions/workflows/main.yml/badge.svg)
+![main workflow](https://github.com/foxim-org/foxim-client/actions/workflows/main.yml/badge.svg)
 
-# chat
+## FOXIM CLIENT
 
-#### 安装教程
+### 如何开发
 
-1.  npm使用 npm i
-2.  yarn使用yarn
-3.  xxxx
-
-#### 使用说明
-
-1.  启动项目npm run dev 或者yarn dev
+```
+git clone https://github.com/foxim-org/foxim-client
+cd foxim-client
+yarn install
+yarn run dev
+```

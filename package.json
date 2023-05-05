@@ -1,7 +1,5 @@
 {
-  "name": "zml-template-h5",
-  "private": true,
-  "version": "0.0.0",
+  "name": "foxim-client",
   "scripts": {
     "dev": "vite --open",
     "build": "vite build",
