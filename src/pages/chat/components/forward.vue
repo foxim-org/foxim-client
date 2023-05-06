@@ -14,7 +14,7 @@
         background="#F3F5F8FF"
       />
     </div>
-    <div class="recently">
+    <!-- <div class="recently">
       <div>最近转发</div>
       <div class="z-flex">
         
@@ -35,7 +35,7 @@
          
         </div>
       </div>
-    </div>
+    </div> -->
     <div class="rendList">
       <div>
         <div class="title">最近聊天</div>
@@ -122,18 +122,18 @@ const sendMsg = ()=>{
   msg.value = msg.value.sort((a,b)=> a.createdAt - b.createdAt)
     console.log(msg.value);
   checked.value.forEach((item)=>{
-       
+      
     if(item.username != null){
         list.id.push(item.contactId)
         setForward()
-      // msg.value.forEach(i=>{
-      //    i.$type = ''
-      //   send(`private/${item.contactId}`, JSON.stringify(i));
-      //   Toast.success('转发成功')
-      //   setTimeout(()=>{
-      //      history.back()
-      //   },300)
-      // })
+      msg.value.forEach(i=>{
+         i.$type = ''
+        send(`private/${item.contactId}`, JSON.stringify(i));
+        Toast.success('转发成功')
+        setTimeout(()=>{
+           history.back()
+        },300)
+      })
     }else{
       list.groupId.push(item.groupId)
       setForward()

@@ -1,4 +1,4 @@
-<template>
+<!-- <template>
   <div>
     <select v-model="selectedDeviceId">
       <option value="">请选择音频设备</option>
@@ -80,4 +80,48 @@ export default {
     },
   },
 };
+</script> -->
+
+<script setup>
+import {
+  Room,
+  RoomEvent,
+} from 'livekit-client'
+
+import { ref, onMounted } from "vue"
+
+const token1 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODMzNDMzNjMsImlzcyI6IkFQSTZSY2czVjRLcXpCQiIsIm5hbWUiOiJ1c2VyMSIsIm5iZiI6MTY4MzI1Njk2Mywic3ViIjoidXNlcjEiLCJ2aWRlbyI6eyJyb29tIjoibXktZmlyc3Qtcm9vbSIsInJvb21Kb2luIjp0cnVlfX0.hu834AUkYujiMbss_i5H-v97XMaP1Cchkh-TxgqAso8'
+const token2 = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODMzNDM1MDcsImlzcyI6IkFQSTZSY2czVjRLcXpCQiIsIm5hbWUiOiJ1c2VyMiIsIm5iZiI6MTY4MzI1NzEwNywic3ViIjoidXNlcjIiLCJ2aWRlbyI6eyJyb29tIjoibXktZmlyc3Qtcm9vbSIsInJvb21Kb2luIjp0cnVlfX0.hxPRxSIVtYu-VqbXGeWuc9VoDnMlA3PXOJM5zHdmD_8'
+
+const room = new Room()
+
+const localVideoContainer = ref()
+const remoteVideoContainer = ref()
+
+onMounted(async () => {
+
+  await room.prepareConnection('wss://foxim-live.lvyanhui.com')
+
+  room
+    // publish local video and display it to localVideoContainer
+    .on(RoomEvent.LocalTrackPublished, function (publication) { 
+      console.log(publication);
+      const track = publication.track.attach()
+      
+      localVideoContainer.value.appendChild(track)
+    })
+    // subscribe remote video and display it to remoteVideoContainer
+    .on(RoomEvent.TrackSubscribed, function (remoteTrack) {
+      const track = remoteTrack.attach()
+      remoteVideoContainer.value.appendChild(track)
+    })
+
+  await room.connect('wss://foxim-live.lvyanhui.com', token1)
+  await room.localParticipant.enableCameraAndMicrophone()
+})
 </script>
+
+<template>
+  <div ref='localVideoContainer'></div>
+  <div ref='remoteVideoContainer'></div>
+</template>

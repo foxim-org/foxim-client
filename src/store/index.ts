@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
 import mqtt from 'precompiled-mqtt'
-import { Loading,Toast } from "vant";
+import { Toast } from "vant";
 import { login,findGroup } from "../request/http.api"
 import jwt_decode from "jwt-decode";
-
+import router from '../router'
 let client: any;
+
+console.log(router);
 
 const appStore = defineStore("app", {
   state: () => ({
@@ -60,9 +62,11 @@ const appStore = defineStore("app", {
       })
 
       client.on('message', (topic:string, payload:any) => {
+      
         const message = JSON.parse(payload.toString())
         console.log('message',message);
         this.obj = message
+      
         if(message.$type== ''){
           this.isUserList(this.messages,message)  
         }else if(message.$type === 'BURN'){
@@ -72,6 +76,9 @@ const appStore = defineStore("app", {
         }else if(message.type== 'addFriend'){
           // this.obj = message
           this.abc = message
+        }else if(message.$type == "videoCall"){
+        
+          router.push({name:'videoCall',params:{id:message.userId}})
         }
         
         // else if(message.$type== 'recall'){

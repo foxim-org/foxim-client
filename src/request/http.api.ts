@@ -185,15 +185,15 @@ export function codes(params) {
   return post(`/api/v1/sms/codes/?mobile=${params}`)
 }
 //发送验证码
-export function codesLogin(params) {
+export function codesLogin(params={}) {
   return post(`/api/v1/user/loginMobile?code=${params.code}&mobile=${params.phone}`)
 }
 //发送验证码
-export function codesregister(params) {
+export function codesregister(params={}) {
   return post(`/api/v1/user/registerMobile`,params)
 }
 //修改密码
-export function setPas(params) {
+export function setPas(params={}) {
   return post(`/api/v1/user/setUserMobilePwd`,params)
 }
 
@@ -203,11 +203,15 @@ export function setForwardTime(params={}) {
 }
 //获取最近转发列表
 
-export function getForwardList(params={}) {
+export function getForwardList() {
   return get(`/api/v1/contacts/getForwardList`,)
 }
 //获取链接
-export function searchUrl(params={}) {
+export function searchUrl() {
   return get(`/api/v1/searchUrl/`,)
+}
+//获取链接
+export function getVideoToken(params={}) {
+  return post(`/livekit/api/v1/grant-livekit-token`,params)
 }
 

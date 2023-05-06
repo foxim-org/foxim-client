@@ -43,6 +43,10 @@ export default defineConfig({
         //target: "http://192.168.2.110:8001", 
         changeOrigin: true,
       },
+      "/livekit": {
+        target: "https://foxim.lvyanhui.com",   
+        changeOrigin: true,
+      },
       '/mqtt': {
         target: 'http://120.77.43.64:10889',
         ws: true,
