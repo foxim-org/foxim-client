@@ -46,12 +46,12 @@ import { useRoute } from 'vue-router';
 import appStore from "@/store/index";
 import utils from "@/utils";
 import { storeToRefs } from "pinia";
-
+import {Room} from 'livekit-client'
 const store = appStore();
 const { abc } = storeToRefs(store);
 const route = useRoute()
 const { connect } = store
-
+const room = new Room()
 // window.addEventListener('resize', function() {
 //   var bodyHeight = document.documentElement.clientHeight;
 //   var screenHeight = window.screen.height;
@@ -64,6 +64,7 @@ const { connect } = store
 // });
 
 onMounted(() => {
+    room.prepareConnection('wss://foxim-live.lvyanhui.com')
     connect()
  
 })

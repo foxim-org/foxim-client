@@ -778,7 +778,7 @@ const changeItem = (text) => {
       $type: 'videoCall',
     }
     send(`private/${route.query.id}`, JSON.stringify(msg))
-    router.push({name:'videoCall',params:{id:userId.id}})
+    router.push({name:'videoCall',params:{id:userId.id,isCall:0}})
     }
      
   }

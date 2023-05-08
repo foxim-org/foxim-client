@@ -33,7 +33,7 @@ const appStore = defineStore("app", {
     abc:{},
     token: localStorage.getItem("token") || "",
     groupId:"",
-    LoadingShow:false
+    notice:{}
   }),
   actions: {
  
@@ -77,8 +77,9 @@ const appStore = defineStore("app", {
           // this.obj = message
           this.abc = message
         }else if(message.$type == "videoCall"){
-        
-          router.push({name:'videoCall',params:{id:message.userId}})
+          router.push({name:'videoCall',params:{id:message.userId,isCall:1}})
+        }else if(message.$type == 'videoNotice'){
+            this.notice = message
         }
         
         // else if(message.$type== 'recall'){
