@@ -38,7 +38,8 @@
                             <van-image width="35" height="35" :src='item.avatarUrl?item.avatarUrl:info.avatarUrl'
                                 round />
                             <p style="margin-left: 20px; flex: 1;">{{ item.username }}</p>
-                            <img width="24" height="24" :src='imgSrc' @click="change(item)" v-show="item.isSilencedTo?imgSrc='/src/assets/image/66680.png':'/src/assets/image/21974.png'" />
+                       
+                            <img width="24" height="24" :src="item.isSilencedTo?imgsrc1:imgsrc" @click="change(item)"  />
                         </div>
                     </div>
                 </van-collapse>
@@ -66,15 +67,24 @@ const checked1 = ref(false);
 const  id = { groupId: localStorage.getItem("groupId")}
 const list = ref([])
 const info = JSON.parse(localStorage.getItem("info"))
-let imgSrc = ref("/src/assets/image/21974.png")
+const imgsrc = ref('/src/assets/image/21974.png')
+const imgsrc1 = ref('/src/assets/image/66680.png')
 const change = function (item) {
-    if (imgSrc.value == "/src/assets/image/21974.png") {
-        imgSrc.value = "/src/assets/image/66680.png"
+     if(  item.isSilencedTo){
+        item.isSilencedTo = false
+        noLient(item)
+     }else{
+        item.isSilencedTo = true
         lient(item)
-    } else {
-        imgSrc.value = "/src/assets/image/21974.png"
-         noLient(item)
-    }
+     }
+   
+    // if (imgSrc.value == "/src/assets/image/21974.png") {
+    //     imgSrc.value = "/src/assets/image/66680.png"
+     
+    // } else {
+    //     imgSrc.value = "/src/assets/image/21974.png"
+        
+    // }
 }
 const lient = async(user)=>{
   let params = {
