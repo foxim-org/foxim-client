@@ -19,13 +19,13 @@
     </van-popup>
       <div class="info">
         <div class="avatral" @click="router.push('/infoSet')">
-          <img :src="avatul? avatul :'static/20230407163657.png'" alt="">
+          <img :src="avatul? avatul :sInfo.moRenUrl" alt="">
         <!--   src="../../../public/20230407163657.png"  -->
      
         </div>
         <div class="name">
           <p class="bold">{{ name }} </p>
-          <p>狐狸号:{{ foxCode }} </p>
+          <p>极乐派对号:{{ foxCode }} </p>
         </div>
       </div>
     </div>
@@ -54,9 +54,9 @@
           <van-icon name="qr" @click="go" />
         </div>
       </div> -->
-      <div class="img">
+      <!-- <div class="img">
         <img src="../../assets/image/51@2x.png" alt="">
-      </div>
+      </div> -->
       <div class="center">
         <div class="cell" @click="router.push('/infoSet')">
           <img src="../../assets/image/67321@3x.png" alt="" class="label">
@@ -71,12 +71,12 @@
         <div class="cell" @click="router.push('/about')">
           <img src="../../assets/image/67319@3x.png" alt="" class="label">
 
-          <p>关于狐狸</p>
+          <p>关于极乐派对</p>
           <img src="../../assets/image/82075@2x.png" alt="" class="load">
         </div>
         <div class="cell" @click="dislogin">
           <img src="../../assets/image/67318@3x.png" alt="" class="label">
-          <p>登出狐狸</p>
+          <p>登出</p>
           <img src="../../assets/image/82075@2x.png" alt="" class="load">
         </div>
       </div>
@@ -155,10 +155,13 @@
 <script setup>
 import { ref } from "vue";
 import { useRouter } from 'vue-router';
+
 const router = useRouter()
 let showShare = ref(false);
 let flag = ref(false)
 let showNew = ref(false)
+const sInfo = JSON.parse(localStorage.getItem("info"))
+
 if (localStorage.getItem("token")) {
   flag.value = true
 }

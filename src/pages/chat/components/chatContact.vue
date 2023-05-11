@@ -8,24 +8,23 @@
       <van-tab title="找人">
         <div class="content">
           <div>
-            <van-search v-model="value" show-action placeholder="狐狸号/手机号/群" title-style="margin-left: 10px;"
+            <van-search v-model="value" show-action placeholder="极乐派对号/手机号" title-style="margin-left: 10px;"
               @search="goSeach">
               <template #action>
-                <div @click="goSeach">搜索</div>
+                <div @click="goSeach(0)">搜索</div>
               </template>
             </van-search>
           </div>
-    <!--       <van-cell title="添加手机联系人" icon="phone-o" is-link />
-          <van-cell title="扫一扫添加好友" icon="scan" is-link />
-          <van-cell title="面对面加好友" icon="exchange" is-link />
-          <van-cell title="按条件查找陌生人" icon="search" is-link />
-          <van-cell title="查看附近的人" icon="location-o" is-link to="nearby"/> -->
         </div>
       </van-tab>
       <van-tab title="找群">
         <div class="centent">
-          <van-search v-model="value" placeholder="狐狸号/手机号/群" title-style="margin-left: 10px;" />
-          <p style="text-align: center;">完善中.....</p>
+          <van-search v-model="value" show-action placeholder="群名称" title-style="margin-left: 10px;"
+              @search="goSeach">
+              <template #action>
+                <div @click="goSeach(1)">搜索</div>
+              </template>
+            </van-search>
         </div>
       </van-tab>
     </van-tabs>
@@ -63,43 +62,9 @@ const changes = (key) => {
 const onClickLeft = () => history.back();
 const value = ref("")
 const fruInfo = ref({})
-//查询好友
-const onClickButton = function () {
-  console.log(value.value);
-  searchFriend(value.value).then(res => {
-    fruInfo.value = res.data
-    if (res.status !== 200) {
-      Toast.fail(res.message)
-    }
-  }).catch(err => {
-
-    Toast.fail(fruInfo.value)
-  })
-
-}
-//显示好友信息
-const showInfo = function () {
-  console.log(fruInfo.value.id);
-  showInfoBefore(fruInfo.value.id).then(res => {
-    Toast.fail(res.message)
-  })
-
-}
-//添加好友
-const addFri = function () {
-  console.log(fruInfo.value.id);
-  addFriend({ contactId: fruInfo.value.id }).then(res => {
-    
-    Toast.success(res.data)
-  }).catch(err => {
-    console.log(11111);
-    Toast.fail(fruInfo.value)
-  })
-}
-const goSeach = function () {
-  console.log(11111);
-
-  router.push({ path: 'add', query: { searchValue: value.value } });
+const goSeach = function (index) {
+   console.log(index);
+  router.push({ path: 'add', query: { searchValue: value.value,index } });
 
 }
 </script>

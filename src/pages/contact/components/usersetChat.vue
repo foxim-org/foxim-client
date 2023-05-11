@@ -10,7 +10,7 @@
     <div class="content">
     
         <div class="name_wrapper">
-        
+      
             <div class="z-flex">
               <div class="z-flex-column" style="margin-right: 20px;">
                 <van-image
@@ -74,6 +74,7 @@
         <!-- <van-cell title="申请清空双方记录" is-link value="申请" label="对方同意将会同时永久删除双方的聊天记录" />
         <van-cell title="聊天记录保存时间" label="于设定时间后,将自带删除聊天室内所有成员的聊天记录,包含未读讯息" is-link value="永久" />
         <van-cell title="清空聊天记录" is-link /> -->
+        <van-cell title="清空聊天记录" is-link @click="removeMsg" /> 
         <van-cell title="投诉举报" is-link />
       </div>
 
@@ -87,7 +88,7 @@
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
-import { deleteFriend, blackFriend, contactTop } from "../../../request/http.api";
+import { deleteFriend, blackFriend, contactTop,emptyPrivateMessages } from "../../../request/http.api";
 
 import { useRouter, useRoute } from "vue-router";
 import { Notify,Toast } from "vant";
@@ -96,21 +97,28 @@ const router = useRouter();
 const route = useRoute();
 const checkedTop = ref(false);
 const disturb = ref(false);
-const value = ref("");
-const isSlider = ref(false)
-const num = ref(10);
-const checked_burn = ref(false)
+const remove = async()=>{
+  let params = {
+    contactId:route.query.id
+  }
+  try {
+  const res = await emptyPrivateMessages(params)
+  Toast.success(res.data)
+  } catch (error) {
+    Toast.fail(error.response.data)
+  }
 
+}
+const removeMsg = ()=>{
+  remove()
+}
 const onClickLeft = () =>{
   findTop()
   history.back();
 } 
-// const burn = (value) => {
-//   value ? isSlider.value = true : isSlider.value = false
-// }
-//好友置顶
 
-// console.log(disturb.value);
+
+//好友置顶
 const changTop = (value)=>{
   checkedTop.value = value
 }

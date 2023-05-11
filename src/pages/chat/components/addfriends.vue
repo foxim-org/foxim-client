@@ -10,7 +10,7 @@
             </van-search>
         </div>
         <p class="text">查找人</p>
-        <div class="center">
+        <div class="center" v-if="index==0">
             <div class="item" v-if="show">
                 <div class="topItem">
                     <div class="avator">
@@ -29,18 +29,41 @@
 
             </div>
         </div>
+        <div class="center" v-if="index == 1">
+            <div class="item" v-if="show" v-for="item in grouoInfo">
+                <div class="topItem">
+                    <div class="avator">
+                        <img :src="item.groupHead? item.avatarUrl : 'static/20230407163657.png'" alt="">
+                    </div>
+                
+                    <div class="name">
+                        <p>{{ item.name }}</p>
+                        <p class="time">
+                            {{item.foxCode}}
+                        </p>
+                    </div>
+                  
+                    <div class="btn" @click="addFri(item.id)" v-if="item.isJoin=='INEXISTENCE'">添加</div>
+                    <div class="btn" v-else-if="item.isJoin=='ACCEPTED'">已加入</div>
+                    <div class="btn" v-else="item.isJoin=='PENDING'">等待验证</div>
+                
+                </div>
+
+            </div>
+        </div>
     </div>
 </template>
   
 <script setup>
 import { reactive, ref, onMounted } from "vue"
-import { searchFriend, showInfoBefore, addFriend } from "../../../request/http.api"
+import { searchFriend, showInfoBefore, addFriend,searchGroupInfo,addGroup } from "../../../request/http.api"
 import { Toast } from 'vant';
 import { useRouter, useRoute } from "vue-router";
 /* import { findGroupMember, setgroupGuilder, removegroupGuilder, removegroup } from "@/request/http.api.ts"; */
 
 const router = useRouter();
 const route = useRoute();
+const index = ref(route.query.index)   //0是好友 1是群
 console.log(route.query.searchValue);
 const tabList = reactive([
     {
@@ -64,15 +87,18 @@ const onClickLeft = () => history.back();
 const contactsStatus = ref("")
 const value = ref("")
 const fruInfo = ref({})
+const grouoInfo = ref([])
 const show = ref(false)
 //查询好友
 let status = ref("")
-const onClickButton = function () {
-    console.log(value.value);
+const onClickButton = async ()=> {
+
+    console.log(index.value);
     if(value.value!=route.query.searchValue && value.value!=""){
         route.query.searchValue=value.value
     }
-    searchFriend(route.query.searchValue).then(res => {
+       if(index.value == 0){
+        searchFriend(route.query.searchValue).then(res => {
         fruInfo.value = res.data
         if (res.status !== 200) {
             Toast.fail(res.message)
@@ -91,6 +117,18 @@ const onClickButton = function () {
     }).catch(err => {
         Toast.fail(err.response.data)
     })
+       }else{
+        let params = {
+            search:route.query.searchValue,
+        }
+        const res = await searchGroupInfo(params)
+        if (res.status !== 200) {
+            Toast.fail(res.message)
+        }
+        grouoInfo.value = res.data
+        show.value = true
+       }
+   
 
 }
 const goSeach = function () {
@@ -112,7 +150,7 @@ const goSeach = function () {
         console.log(status.value, 2222);
         onClickButton()
     }).catch(err => {
-        Toast.fail('没有查询到该用户')
+        Toast.fail(res.message)
     })
 
 }
@@ -129,8 +167,9 @@ const showInfo = function () {
 
 }
 //添加好友
-const addFri = function () {
-    console.log(fruInfo.value.id);
+const addFri = async (groupId)=> {
+    if(index.value == 0){
+        console.log(fruInfo.value.id);
     addFriend(fruInfo.value.id).then(res => {
         console.log(res);
        
@@ -142,6 +181,18 @@ const addFri = function () {
         Toast.fail(err.response.data)
         console.log(err.response.data);
     })
+    }else{
+      console.log(groupId);
+      try {
+        const res = await  addGroup(groupId)
+        Toast.success('添加成功,等待对方验证中')
+        onClickButton()
+      } catch (error) {
+        Toast.fail(error.response.data)
+      }
+   
+    }
+   
 }
 </script>
   
@@ -206,8 +257,8 @@ const addFri = function () {
                 }
 
                 .btn {
-                    width: 112px;
-                    height: 52px;
+                    width: 130px;
+                    height: 70px;
                     border-radius: 12px 12px 12px 12px;
                     opacity: 1;
                     border: 0.5px solid #e7e7e7;

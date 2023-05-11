@@ -19,8 +19,8 @@
       <van-divider />
       <div class="z-t-c btn_text" @click="toModule('/group')">建立群组</div>
       <van-divider />
-      <div class="z-t-c btn_text" @click="toModule('/closeChat')">建立密聊</div>
-      <van-divider />
+      <!-- <div class="z-t-c btn_text" @click="toModule('/closeChat')">建立密聊</div> -->
+      <!-- <van-divider /> -->
       <div class="z-t-c" @click="close" style="color: #a5a8b6ff; padding-bottom: 15px">
         取消
       </div>
@@ -112,6 +112,19 @@
                   @click="router.push({ path: '/personInfo', query: { id: item.userId } })">查看</div>
               </div>
             </div>
+            <div class="item" v-for="item in groupAdd" v-if="groupAdd.length">
+              <div class="topItem">
+                <div class="avator" style="width: 40px;">
+                  <img :src="item.avatarUrl ? item.avatarUrl:'static/20230407163657.png'" alt="" style="width: 100%;">
+                </div>
+                <div class="name">
+                
+                  <p>{{ item.username }}</p>
+                </div>
+                <div class="btn" style="margin-right: 20px;"
+                  @click="router.push({ path: '/groupInfoAdd', query: { id: item.userId,group:item.groupId } })">查看</div>
+              </div>
+            </div>
           </div>
         </van-tab>
         <!--   <van-tab title="群通知" :title-class="active == 3 ? 'activeName' : ''">
@@ -131,7 +144,7 @@
 <script setup>
 import { ref, onMounted, onActivated,watch } from "vue";
 import { useRouter, onBeforeRouteUpdate } from "vue-router";
-import { findMyFriends, findGroup, friReList, agreeFri } from "@/request/http.api.ts";
+import { findMyFriends, findGroup, friReList, agreeFri,groupRequests } from "@/request/http.api.ts";
 import { IndexBar, IndexAnchor } from "vant";
 import utils from "@/utils";
 import appStore from "@/store/index";
@@ -151,6 +164,7 @@ const userList = ref([]);
 //群组
 const groupList = ref([]);
 const addList = ref([]);
+const groupAdd = ref([])
 //新增加
 const btnUser = () => {
   router.push("/chatContact");
@@ -199,7 +213,7 @@ const options = [
 
 
 const close = () => {
-  show.value = false;
+  NewAdd.value = false;
 };
 const onSelect = (option) => {
   Toast(option.name);
@@ -250,6 +264,11 @@ const addListfun = function () {
     addList.value = res.data
   })
 }
+const groupInfo = async ()=>{
+  const res = await groupRequests()
+  console.log(res,22);
+  groupAdd.value = res.data
+}
 let infoList=ref([])
 watch(
   ()=>abc.value,
@@ -263,6 +282,7 @@ onActivated(() => {
   getGroup();
   list();
   addListfun()
+  groupInfo()
 });
 //dianji 标签
 const change = function () {

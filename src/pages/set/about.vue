@@ -1,10 +1,11 @@
 <template>
     <div class="bgc">
+        <!-- <div v-html="bodyValue"></div> -->
         <div class="top">
             <van-icon name="arrow-left" @click="back" style="float: left;" /> 关于狐狸
         </div>
-        <div class="center">
-
+         <div v-html="bodyValue"></div>
+           <!-- <div class="center">
            <h3 style="text-align: center;"> 狐狸轻量级即时通讯</h3>
            <p>
             狐狸即时通讯软件是一款高质量的即时通讯解决方案，提供了便捷的SDK和API接入方式，以适应各种应用场景。无论你要构建一个社交媒体应用程序，还是要创建一个在线客服平台，都可以凭借狐狸轻量级即时通讯软件提供的稳定和可靠的即时通讯服务满足你的业务需求。
@@ -25,20 +26,32 @@
             此外，狐狸即时通讯软件是开源的。这意味着你可以自由地使用、修改和分发它的源代码。这为那些想要探索和学习即时通讯技术的开发者提供了一个很好的机会。同时，我们也提供商业版付费，为你提供专业的技术支持和定制化的服务，以满足你的更高需求。
            </p>
 
-        </div>
+        </div> -->
+      
+      
     </div>
 </template>
   
 <script setup>
-import { } from "vue"
+import { onMounted,ref} from "vue"
 import { useRouter } from 'vue-router';
+import {AboutWith} from '@/request/http.api'
 const router = useRouter()
+const bodyValue = ref('')
+const about =async ()=>{
+    const res = await AboutWith()
+    console.log(res);
+    bodyValue.value = res.data[0].value
+}
 const back = function () {
     router.push("/set")
 }
+onMounted(()=>{
+    about()
+})
 </script>
   
-<style lang="scss" scoped>
+<style lang="scss">
 .van-switch--on {
     background: linear-gradient(180deg, #14bffd 0%, #69d29a 100%);
 }
@@ -58,7 +71,9 @@ const back = function () {
 
     }
 
-    .center {
+   
+}
+.center {
         background-color: #fff;
         border-radius: 2rem 2rem 0 0;
         padding: 0 84px;
@@ -77,5 +92,4 @@ const back = function () {
             margin-top: 10px;
         }
     }
-}
 </style>

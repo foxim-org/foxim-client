@@ -2,7 +2,7 @@
     <div class="my">
         <van-nav-bar title="发现" />
   <div v-for="item in url" class="url">
-    <van-cell :title="item.name" is-link :url="item.url" />
+    <van-cell :title="item.name" is-link  @click="sendIframe(item.url)" />
   </div>
   
     </div>
@@ -15,12 +15,18 @@
 <script lang="ts" setup>
 import { onMounted, ref } from 'vue';
 import {searchUrl} from '@/request/http.api'
+import { useRouter } from "vue-router";
+const router = useRouter();
 const url = ref([])
 const searchAdd = async()=>{
 const res =await searchUrl()
     url.value = res.data
    console.log(url.value);
    
+  
+}
+const sendIframe = (url:string)=>{
+  router.push({name:'iframe',params:{url}})
   
 }
 onMounted(() => {

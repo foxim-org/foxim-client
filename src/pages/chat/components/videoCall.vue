@@ -74,17 +74,28 @@ const answerCall = async () => {
    let msg = {
     $type:'videoNotice',
     notice:1, //0挂断 1是接听
-    type:'notice'
+    type:'notice',
+    userId:route.params.id,
+    contactId:route.params.cid
    }
-   send(`private/${route.params.id}`, JSON.stringify(msg))
+   console.log(route.params);
+   send(`private/${msg.userId}`, JSON.stringify(msg))
   if (!isCallAnswered.value) {
     connection()
     isCalls.value = false
   }
 }
 const hangup = ()=>{
+  let msg = {
+    $type:'videoNotice',
+    notice:0, //0挂断 1是接听
+    type:'notice',
+    userId:route.params.id,
+    contactId:route.params.cid
+   }
+  send(`private/${msg.contactId}`, JSON.stringify(msg));
   room.disconnect()
-  
+   router.go(-1)
  
    }
 const connection = async()=>{
@@ -100,7 +111,7 @@ const leftRouter = ()=>{
     .on(RoomEvent.LocalTrackPublished, function (publication) { 
       console.log(publication,123);
       const track = publication.track.attach()
-      
+        console.log(track,444);
       localVideoContainer.value.appendChild(track)
     })
     // subscribe remote video and display it to remoteVideoContainer
@@ -109,13 +120,13 @@ const leftRouter = ()=>{
       const track = remoteTrack.attach()
       remoteVideoContainer.value.appendChild(track)
     })
-    .on(RoomEvent.TrackUnsubscribed ,function(trackUnsubscribed){
-      isCallAnswered.value =false
+    // .on(RoomEvent.TrackUnsubscribed ,function(trackUnsubscribed){
+    //   isCallAnswered.value =false
     
-      text.value = '已挂断'
-      room.disconnect()
-       router.go(-1)
-    })
+      
+    //   room.disconnect()
+    //   //  router.go(-1)
+    // })
     let data=  {
        room:route.params.id,
       // room:'6440f0c6442cb04e4ea031d4',
@@ -124,7 +135,8 @@ const leftRouter = ()=>{
     const res = await getVideoToken(data)
     await room.connect('wss://foxim-live.lvyanhui.com', res.data.token)
     await room.localParticipant.enableCameraAndMicrophone()
-    
+    // await room.localParticipant.disableCameraAndMicrophone()
+    // await room.localParticipant.disableVideo() // 禁用本地视频轨道
   }
    watch(
     ()=>notice.value,
@@ -132,7 +144,8 @@ const leftRouter = ()=>{
       nextTick(()=>{
         if(val.notice === 0){
           text.value = '已挂断'
-        
+          room.disconnect()
+          router.go(-1)
         }else{
           text.value = '连接中'
            connection()

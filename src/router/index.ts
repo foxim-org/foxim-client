@@ -99,6 +99,9 @@ const Router = createRouter({
       name: 'ChatContact',
       path: '/chatContact',
       component: () => import('../pages/chat/components/chatContact.vue'),
+      meta: {
+        show: true,
+      },
     },
     //提醒
     {
@@ -313,6 +316,14 @@ const Router = createRouter({
         show: true,
       },
     },
+    {
+      path: '/iframe',
+      name: 'iframe',
+      component: () => import('../pages/my/iframe.vue'),
+      // meta: {
+      //   show: true,
+      // },
+    },
     //设定
     {
       path: '/passwordSet',
@@ -409,21 +420,40 @@ const Router = createRouter({
     {
       path: '/publish',
       component: () => import('../pages/circleFriends/friends/publish.vue'),
+      meta: {
+        show: true,
+      },
     },
     //发布朋友圈
     {
       path: '/someoneCircle',
       component: () => import('../pages/circleFriends/friends/someoneCircle.vue'),
+      meta: {
+        show: true,
+      },
     },
     //添加联系人
     {
       path: '/add',
       component: () => import('../pages/chat/components/addfriends.vue'),
+      meta: {
+        show: true,
+      },
     },
     //添加联系人
     {
       path: '/personInfo',
       component: () => import('../pages/chat/components/personInfo.vue'),
+    },
+     //添加联系人
+     {
+      path: '/groupInfoAdd',
+      component: () => import('../pages/chat/components/groupInfoAdd.vue'),
+    },
+    {
+      path: '/groupUserName',
+      name:'groupUserName',
+      component: () => import('../pages/chat/components/groupUserName.vue'),
     },
   ],
 })

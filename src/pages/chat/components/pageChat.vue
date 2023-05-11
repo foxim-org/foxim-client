@@ -86,7 +86,7 @@
                             :src="
                               item.avatarUrl
                                 ? item.avatarUrl
-                                : 'static/20230407163657.png'
+                                : userId.moRenUrl
                             "
                           />
                         </div>
@@ -185,6 +185,7 @@
                               @touchstart.native="gtouchstart(item.id)"
                               @touchend="end()"
                             >
+                            <!-- <span style="margin-right: 20px;">未读</span> -->
                               <div
                                 class="user_msg"
                                 v-show="
@@ -196,8 +197,9 @@
                                 "
                               >
                                 {{ item.text }}
+                              
                               </div>
-
+                             
                               <!-- 语音 -->
                               <div
                                 @click.prevent="handlePlayAudio(index)"
@@ -265,7 +267,7 @@
                             :src="
                               item.avatarUrl
                                 ? item.avatarUrl
-                                : 'static/20230407163657.png'
+                                :userId.moRenUrl
                             "
                           />
                         </div>
@@ -691,6 +693,7 @@
   const { messages } = storeToRefs(store)
   const { send } = store
   const loop: any = ref(0)
+  const nanoId = nanoid()
   const groupImg = ref('')
   const voice = ref(true)
   const audios = ref(null) as any
@@ -776,9 +779,10 @@ const changeItem = (text) => {
       groupId: route.query.id,
       username: userId.username,
       $type: 'videoCall',
+     
     }
     send(`private/${route.query.id}`, JSON.stringify(msg))
-    router.push({name:'videoCall',params:{id:userId.id,isCall:0}})
+     router.push({name:'videoCall',params:{id:msg.userId,isCall:0,cid:msg.contactId}})
     }
      
   }
@@ -796,6 +800,7 @@ const changeItem = (text) => {
       groupName: '' as any,
       groupHead: '',
       id: Math.random(),
+      msgId:nanoId,
       documentUrl: '',
       fileName: '',
       playing: false,
@@ -879,11 +884,12 @@ const changeItem = (text) => {
     }
   }
   const onSelects = (user, index) => {
-    const id = nanoid()
+  
     user.$type = 'recall'
-    user.id = id
-    console.log(user)
-
+   
+    console.log(user,'撤回')
+     console.log(route.query.id);
+     
     send(`private/${route.query.id}/recall`, JSON.stringify(user))
     // console.log(user);
     messages.value.splice(index, 1)
@@ -989,6 +995,7 @@ const changeItem = (text) => {
     }
   }
   const gtouchend = () => {
+  
     if (!isRecording.value) return
     const recordDuration =
       Math.round(((new Date().getTime() - recordStartTime.value) / 1000) * 10) /
@@ -1004,6 +1011,7 @@ const changeItem = (text) => {
       groupName: '' as any,
       groupHead: '',
       id: Math.random(),
+      msgId:nanoId,
       playing: false,
       width: 0,
       audioTime: '',
@@ -1141,6 +1149,7 @@ const changeItem = (text) => {
       groupName: '' as any,
       groupHead: '',
       id: Math.random(),
+      msgId:nanoId,
       playing: false,
       width: 0,
       audioTime: '',
@@ -1162,7 +1171,9 @@ const changeItem = (text) => {
       console.log(msg)
       msg.groupId = ''
       send(`private/${route.query.id}`, JSON.stringify(msg))
-      messages.value.push(msg)
+       messages.value.push(msg)
+       console.log(messages.value);
+       
     }
     value.value = ''
     isImg.value = true
@@ -1356,8 +1367,8 @@ const changeItem = (text) => {
         .audio_img {
           width: 30px;
           height: 42px;
-          moz-transform: rotate(-180deg);
-          -webkit-transform: rotate(-180deg);
+          transform:rotate(-180deg); ;
+        
         }
       }
     }

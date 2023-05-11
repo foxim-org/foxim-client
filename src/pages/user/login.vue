@@ -2,14 +2,17 @@
   <div class="bgc">
     <div class="top">
       <div class="img">
-        <img src="../../assets/image/67272@3x.png" alt="">
+        <!-- <img src="../../assets/image/67272@3x.png" alt=""> -->
+        <img :src="logoValue.value" alt="">
       </div>
-      <div class="logohuli">
+      <div style="text-align: center;font-size: 16px;margin-top: 15px;font-weight: bold;">CTC极乐派对</div>
+      <!-- <div class="logohuli">
         <img src="../../assets/image/67110@3x.png" alt="">
-      </div>
+      </div> -->
     </div>
     <div class="center">
-      <van-form @submit="onSubmit">
+      <van-form @submit="onSubmit" @getValues="changeValues">
+        <!-- 账号密码 -->
         <van-cell-group inset>
           <p>账号</p>
           <van-field v-model="username" name="用户名" placeholder="请输入您的狐狸号或者手机号"
@@ -23,18 +26,47 @@
             登录
           </van-button>
         </div>
+        <!-- 手机账号 -->
+        <!-- <van-cell-group inset>
+          <p>手机账号</p>
+          <van-field v-model="username" name="用户名" placeholder="请输入您的狐狸号或者手机号"
+            :rules="[{ required: true, message: '请填写用户名' }]" style="margin-bottom:40px" @focus="focus" @blur="blur"/>
+          <p>密码</p>
+          <van-field v-model="password" type="password" name="密码" placeholder="请输入您的密码"
+            :rules="[{ required: true, message: '请填写密码' }]" @focus="focus" @blur="blur"/>
+        </van-cell-group>
+        <div style="margin: 16px;" class="btn">
+          <van-button type="primary" native-type="submit" round block style="margin:24px auto" size="large">
+            登录
+          </van-button>
+        </div> -->
+        <!-- 邮箱密码 -->
+        <!-- <van-cell-group inset>
+          <p>邮箱</p>
+          <van-field v-model="username" name="用户名" placeholder="请输入您的狐狸号或者手机号"
+            :rules="[{ required: true, message: '请填写用户名' }]" style="margin-bottom:40px" @focus="focus" @blur="blur"/>
+          <p>密码</p>
+          <van-field v-model="password" type="password" name="密码" placeholder="请输入您的密码"
+            :rules="[{ required: true, message: '请填写密码' }]" @focus="focus" @blur="blur"/>
+        </van-cell-group>
+        <div style="margin: 16px;" class="btn">
+          <van-button type="primary" native-type="submit" round block style="margin:24px auto" size="large">
+            登录
+          </van-button>
+        </div> -->
       </van-form>
     </div>
     <div class="footer" v-show="show">
       <p style="border-right: 1px solid black;" @click="router.push('phoneLogin')">验证码登录</p>
       <p @click="router.push('phoneRegister')">新用户注册</p>
+      <!-- <p @click="router.push('register')">新用户注册</p> -->
     </div>
   </div>
 </template>
 
 <script setup>
 import {
-  login, regist
+  login, regist,logoImg
 } from "../../request/http.api";
 import { ref, onMounted } from "vue"
 import { Notify, Toast } from 'vant';
@@ -46,7 +78,7 @@ const route = useRoute()
 const store = appStore()
 const isLoading = ref(false)
 const show = ref(true)
-
+const logoValue = ref({})
 const username = ref('')
 const password = ref('')
 const hasToolbar = ref(false)
@@ -65,19 +97,11 @@ const onSubmit = (values) => {
     Toast('登录成功');
   })
 };
-/* const getKeyboardState = function () {
-  const monitorKeyboard = new MonitorKeyboard();
-  monitorKeyboard.onStart();
-  monitorKeyboard.onShow(() => {
-    console.log('键盘弹出')
-    show.value=false
-  })
-  monitorKeyboard.onHidden(() => {
-    console.log('键盘收起')
-    show.value=true
-  })
+const logo  = async()=>{
+  const res =await logoImg()
+  logoValue.value = res.data
 }
-getKeyboardState() */
+
 
 
 const goregiet = function () {
@@ -99,7 +123,7 @@ onMounted(() => {
   // console.log(window.screen.availHeight); // 输出是否有工具栏
   // console.log(window.innerHeight);
   // console.log(hasToolbar);
-
+  logo()
 })
 
 </script>

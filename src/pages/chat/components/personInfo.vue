@@ -4,9 +4,9 @@
             <div class="left" @click="goback">
                 <img src="../../../assets/image/80597.png" alt="" />
             </div>
-            <div class="right" @click="goPublish">
+            <!-- <div class="right" @click="goPublish">
                 <img src="../../../assets/image/80694.png" alt="" />
-            </div>
+            </div> -->
         </div>
         <div class="center">
             <div class="circle">
@@ -16,7 +16,7 @@
                     <div class="text">
                         <p style="font-size: 20px;">{{ info.username }}</p>
                         <p style="font-size: 12px; color: #A5A8B6; margin-top: 25px;">
-                            狐狸号:{{ info.foxCode }} <span style="
+                            极乐派对:{{ info.foxCode }} <span style="
                                                       padding: 3px;
                                                       height: 26px;
                                                       background: linear-gradient(180deg, #14BFFC 0%, #69D29B 100%);

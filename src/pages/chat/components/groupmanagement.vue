@@ -16,9 +16,10 @@
                 </div>
                 <div class="mCenter">
                     <div class="item" v-for="(item, index) in userList" :key="index">
-                        <van-image round width="32" height="32" :src="item.avatarUrl"
-                            style="margin-left: 18px; margin-bottom: 2px;"  />
-                        <p>{{ item.username }}</p>
+                       
+                        <van-image round width="32" height="32" :src="item.avatarUrl?item.avatarUrl:info.avatarUrl"
+                              />
+                        <p style="margin-top: 5px;">{{ item.username }}</p>
                     </div>
 
                 </div>
@@ -26,7 +27,9 @@
             <div class="group">
                 <van-collapse v-model="activeNames">
                     <van-collapse-item title="设置禁言" name="1" @click="toGag">
+                   
                         <template #right-icon>
+                     
                             <van-icon name="arrow" style="margin-top: 5px;" />
                         </template>
                     </van-collapse-item>
@@ -88,9 +91,10 @@
 <script setup>
 import { ref, onMounted } from "vue"
 import { useRouter } from "vue-router";
-import { findGroupMember } from "../../../request/http.api";
+import { findGroupMember } from "@/request/http.api";
 const router = useRouter();
 const onClickLeft = () => history.back();
+const info = JSON.parse(localStorage.getItem("info"))
 //跳转禁言
 const toGag = () => {
     router.push("/estoppel");
@@ -106,12 +110,12 @@ const list = async () => {
     let res = await findGroupMember({ groupId: localStorage.getItem("groupId") });
     console.log(res);
     res.data.forEach(item => {
-        if (item.isAdmin == true) {
-            Arr.push(item)
+        if (item.isAdmin) {
+            userList.value.push(item)
         }
     })
-    console.log(Arr);
-    userList.value = Arr
+ 
+    
     console.log(userList.value);
 };
 
@@ -176,6 +180,9 @@ onMounted(() => {
 
                 div {
                     width: 20%;
+                    display: flex;
+                    flex-direction: column;
+                    align-items: center;
 
                     p {
                         text-align: center;

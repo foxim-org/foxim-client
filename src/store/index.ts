@@ -77,7 +77,7 @@ const appStore = defineStore("app", {
           // this.obj = message
           this.abc = message
         }else if(message.$type == "videoCall"){
-          router.push({name:'videoCall',params:{id:message.userId,isCall:1}})
+          router.push({name:'videoCall',params:{id:message.userId,isCall:1,cid:message.contactId}})
         }else if(message.$type == 'videoNotice'){
             this.notice = message
         }

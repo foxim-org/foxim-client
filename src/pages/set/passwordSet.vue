@@ -11,6 +11,12 @@
         <div class="set">
             <div class="item">
                 <span>
+                    旧密码
+                </span>
+                <input type="password" name="" id="" placeholder="请输入旧密码" v-model="valueOld" @input="checkSec">
+            </div>
+            <div class="item">
+                <span>
                     新密码
                 </span>
                 <input type="password" name="" id="" placeholder="请输入新密码" v-model="value" @input="checkSec">
@@ -46,7 +52,7 @@
 import { ref } from "vue"
 import { useRouter, useRoute } from 'vue-router';
 import { codes, setPas } from "@/request/http.api";
-
+import { Toast } from 'vant';
 const router = useRouter()
 const route = useRoute()
 const back = function () {
@@ -54,8 +60,10 @@ const back = function () {
 }
 const value = ref("")
 const valueSec = ref("")
+const valueOld = ref('')
 const show = ref(false)
 const showPop = ref(false)
+
 console.log(value.value.length);
 const checkSec = function () {
     let reg = /^(?![\d]+$)(?![a-zA-Z]+$)(?![^\da-zA-Z]+$).{6,20}$/
@@ -68,8 +76,12 @@ const checkSec = function () {
     }
 }
 const check = function () {
+    let params = {
+        newPwd:value.value,
+        oldPwd:valueOld.value
+    }
     if (show.value == true) {
-        setPas({ password: value.value }).then(res => {
+        setPas(params).then(res => {
             console.log(res);
             showPop.value=true
         })

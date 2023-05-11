@@ -2,7 +2,7 @@
   <div class="chat_bg">
     <div class="chat">
       <div class="z-flex-justify-between headers">
-        <div class="text">消息(1)</div>
+        <div class="text">消息</div>
         <div class="z-flex-align-center">
       
           <span style="margin: 0 17px" @click="showAdd">
@@ -28,10 +28,10 @@
               建立群组
             </div>
             <van-divider />
-            <div class="z-t-c btn_text" @click="toModule('/closeChat')">
+            <!-- <div class="z-t-c btn_text" @click="toModule('/closeChat')">
               建立密聊
             </div>
-            <van-divider />
+            <van-divider /> -->
             <div
               class="z-t-c"
               @click="close"
@@ -95,14 +95,14 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.avatarUrl ? item.avatarUrl : 'static/20230407163657.png'"
+                            :src="item.avatarUrl ? item.avatarUrl : users.moRenUrl"
                           />
                         </van-badge>
                         <van-badge :dot="muted_msg" v-show="item.isMuted">
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.avatarUrl ? item.avatarUrl : 'static/20230407163657.png'"
+                            :src="item.avatarUrl ? item.avatarUrl : users.moRenUrl"
                           />
                         </van-badge>
                         <div
@@ -161,14 +161,14 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.groupHead?item.groupHead :'static/20230407163657.png' "
+                            :src="item.groupHead?item.groupHead :users.moRenUrl "
                           />
                         </van-badge>
                         <van-badge :dot="muted_msg" v-show="item.isMuted">
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.groupHead?item.groupHead:'static/20230407163657.png'"
+                            :src="item.groupHead?item.groupHead:users.moRenUrl"
                       
                           />
                         </van-badge>
@@ -240,7 +240,7 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.groupHead?item.groupHead :'static/20230407163657.png'"
+                            :src="item.groupHead?item.groupHead :users.moRenUrl"
                            
                           />
                         </van-badge>
@@ -248,7 +248,7 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.groupHead?item.groupHead:'static/20230407163657.png'"
+                            :src="item.groupHead?item.groupHead:users.moRenUrl"
                           
                           />
                         </van-badge>
@@ -316,7 +316,7 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.avatarUrl?item.avatarUrl:'static/20230407163657.png'"
+                            :src="item.avatarUrl?item.avatarUrl:users.moRenUrl"
                           
                           />
                         </van-badge>
@@ -324,7 +324,7 @@
                           <van-image
                             width="50"
                             height="50"
-                            :src="item.avatarUrl?item.avatarUrl:'static/20230407163657.png'"
+                            :src="item.avatarUrl?item.avatarUrl:users.moRenUrl"
                           
                           />
                         </van-badge>
@@ -388,9 +388,6 @@ export default defineComponent({
         connect();
       });
     }
-    // else if(from.path === '/pageChat'){
-    //   location.reload()
-    // }
     else {
       next();
     }
@@ -423,7 +420,8 @@ const arr = ref("");
 const Finalist = ref([]);
 const groupList = ref([]);
 const audio =  ref(null)
-let users = ref(JSON.parse(localStorage.getItem("info")));
+const users = ref(JSON.parse(localStorage.getItem("info")));
+console.log(users.value.moRenUrl);
 const muted_msg = ref(false)
 const onSearch = () => {
   searchUser(value.value);
@@ -542,7 +540,8 @@ const changeLogin = () => {
   location.reload();
 };
 const close = () => {
-  show.value = false;
+
+  NewAdd.value = false;
 };
 
 //提醒

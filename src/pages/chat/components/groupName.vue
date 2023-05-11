@@ -3,7 +3,7 @@
         <div class="header">
             <div>
                 <van-icon name="arrow-left" color="black" @click="onClickLeft" />
-                <span style="margin-left: 10px">群组管理</span>
+              
             </div>
         </div>
         <div class="center">
@@ -33,6 +33,8 @@
                 <van-uploader :after-read="afterRead">
                     <van-image round
                         :src="avator? avator:'static/group.png'"
+                        width="70"
+                        height="70"
                         position="right" />
                 </van-uploader>
             </div>
@@ -114,6 +116,7 @@ const afterRead = (file) => {
 
     ::v-deep .van-cell-group {
         display: flex;
+      
     }
 
     .btn {
@@ -130,12 +133,8 @@ const afterRead = (file) => {
     }
 
     .avator {
-        height: 200px;
-        width: 200px;
-        border-radius: 10px;
-        overflow: hidden;
-        display: inline-block;
-
+   
+     margin-left: 30px;
         img {
             width: 100%;
             height: 100%;

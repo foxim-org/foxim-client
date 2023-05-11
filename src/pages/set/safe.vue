@@ -6,7 +6,7 @@
         <div class="center">
             <img src="../../assets/image/66921@3x.png" alt="" class="load">
         </div>
-        <div class="set" @click="router.push('/setPassword')">
+        <div class="set" @click="router.push('/passwordSet')">
             <p>修改密码</p>
             <img src="../../assets/image/82075@2x.png" alt="" class="load">
 

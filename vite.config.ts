@@ -39,12 +39,12 @@ export default defineConfig({
     },
     proxy: {
       "/api": {
-        target: "https://foxim.lvyanhui.com",   
+        target:  "https://foxim.lvyanhui.com",   
         //target: "http://192.168.2.110:8001", 
         changeOrigin: true,
       },
       "/livekit": {
-        target: "https://foxim.lvyanhui.com",   
+        target:  "https://foxim.lvyanhui.com",   
         changeOrigin: true,
       },
       '/mqtt': {

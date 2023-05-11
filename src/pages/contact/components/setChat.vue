@@ -39,7 +39,7 @@
         <div>
           <van-grid :border="false" :column-num="5">
             <van-grid-item v-for="(item, index) in userList" :key="index">
-              <van-image :src="item.avatarUrl ? item.avatarUrl : 'static/20230407163657.png'" width="32" height="32"
+              <van-image :src="item.avatarUrl ? item.avatarUrl : info.avatarUrl" width="32" height="32"
                 round />
               <div class="grid_name">{{ item.username }}</div>
             </van-grid-item>
@@ -54,7 +54,7 @@
           </van-grid>
         </div>
       </div>
-      <van-cell title="群公告" is-link :label="!groupInfo.notice ? '未设置' : groupInfo.notice"
+      <van-cell title="群公告" is-link :label="!groupInfo.notice ? '' : groupInfo.notice"
         :value="!groupInfo.notice ? '未设置' : ''" @click="show = true" class="gonggao" />
       <!--       <div class="application">
         <div style="padding: 12px 0 0px 12px">群公告</div>
@@ -89,11 +89,16 @@
       <div class="center">
         <van-cell title="群组名称/头像" is-link :value="groupInfo.groupName"
           @click="router.push({ name: 'groupName', query: { name: groupInfo.groupName } })" />
-        <van-cell title="群聊和二维码" is-link :value="groupInfo.groupConnection" />
+        <!-- <van-cell title="群聊和二维码" is-link :value="groupInfo.groupConnection" /> -->
+        <van-cell @click="copyGid(groudId)" title="群ID" :value="groudId" />
         <van-cell title="群聊链接" is-link :value="`https://foxim.lvyanhui.com/#/jumpToGroupId?groupId=${group}`"
           @click="copy" class="yangshi" />
 
-        <van-cell title="我在群里的昵称" is-link :value="groupInfo.username" />
+        <van-cell title="我在群里的昵称" is-link :value="groupInfo.username"
+        @click="router.push({ name: 'groupUserName', query: { name: groupInfo.username,
+        id:groudId
+        } })"
+        />
         <van-cell title="消息免打扰">
           <template #value>
             <van-switch v-model="checked" size="18px" @click="setnotDisturb" />
@@ -124,8 +129,8 @@
         <van-cell title="聊天记录保存时间" is-link value="永久" label="于设定时间后，将自动删除所有的聊天记
         录，包含未读讯息" />
         <van-cell title="导出聊天历史记录" is-link /> -->
-        <van-cell title="清空聊天记录" />
-        <van-cell title="投诉" />
+        <van-cell title="清空聊天记录" @click="clearMsg"  />
+        <!-- <van-cell title="投诉" /> -->
         <div @click="quit" style="padding-bottom: 10px; 
      
                   height: 41px;
@@ -152,7 +157,7 @@
 import { ref, onMounted } from "vue";
 import utils from "@/utils";
 import { useRouter, useRoute } from "vue-router";
-import { quitgroup, removegroupbyleader, findGroupMember, findName, viewGroupSetting, groupTop, notDisturb, updateGroupInfo } from "@/request/http.api";
+import { quitgroup, removegroupbyleader, findGroupMember, findName, viewGroupSetting, groupTop, notDisturb, updateGroupInfo,deleteMessages } from "@/request/http.api";
 import { Toast } from "vant";
 import clipboard3 from "vue-clipboard3";
 const router = useRouter();
@@ -163,7 +168,13 @@ const checked1 = ref(false);
 const show = ref(false);
 const value = ref("");
 const groupInfo = ref({})
+const groudId = localStorage.getItem("groupId")
+const info = JSON.parse(localStorage.getItem("info"))
+
 const { toClipboard } = clipboard3();
+const clearMsg = ()=>{
+  deletMsg()
+}
 const toMember = () => {
   console.log(11111);
   router.push("/groupmenber");
@@ -185,6 +196,15 @@ const copy = async () => {
     console.log(error);
   }
 };
+const copyGid = async (text)=>{
+  try {
+    await toClipboard(text);
+
+    Toast.success("复制成功");
+  } catch (error) {
+    console.log(error);
+  }
+}
 const group = localStorage.getItem("groupId")
 console.log(`https://foxim.lvyanhui.com/#/jumpToGroupId?groupId=${group}`, 123);
 const quit = async () => {
@@ -192,12 +212,8 @@ const quit = async () => {
     let res = await quitgroup({ groupId: localStorage.getItem("groupId") });
     router.push("/contact");
   } catch (error) {
-    console.log(error.response.data);
+    Toast.fail(error.response.data);
   }
-
-
-
-
 };
 const removegroup = () => {
   removegroupbyleader({ groupId: localStorage.getItem("groupId") }).then(
@@ -213,7 +229,18 @@ const viewGroup = async () => {
   const res = await viewGroupSetting({ groupId: localStorage.getItem("groupId") })
   console.log(res);
   groupInfo.value = res.data
+
   console.log(groupInfo.value.notice);
+}
+const deletMsg = async()=>{
+  try {
+    const res =await deleteMessages(localStorage.getItem("groupId") )
+  console.log(res);
+  Toast.success(res.data)
+  } catch (err) {
+    Toast.fail(err.response.data);
+  }
+ 
 }
 //群机器人跳转
 const toRobot = () => {
@@ -268,6 +295,7 @@ const setNotice = function () {
 onMounted(() => {
   list();
   viewGroup()
+  
 });
 </script>
 

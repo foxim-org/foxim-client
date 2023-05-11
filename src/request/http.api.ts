@@ -68,6 +68,10 @@ export function findGroupMember(params = {}) {
 export function setgroupGuilder(data = {}) {
   return post("/api/v1/groups/setmod", data)
 }
+//查找群
+export function searchGroupInfo(params = {}) {
+  return get('/api/v1/groups/searchGroupInfo', params)
+}
 //取消群管理员
 export function removegroupGuilder(data = {}) {
   return post("/api/v1/groups/unsetmod", data)
@@ -193,10 +197,12 @@ export function codesregister(params={}) {
   return post(`/api/v1/user/registerMobile`,params)
 }
 //修改密码
+// export function setPas(params={}) {
+//   return post(`/api/v1/user/setUserMobilePwd`,params)
+// }
 export function setPas(params={}) {
-  return post(`/api/v1/user/setUserMobilePwd`,params)
+  return post(`/api/v1/user/setPwd`,params)
 }
-
 //更新转发请求
 export function setForwardTime(params={}) {
   return post(`/api/v1/contacts/setForwardTime`,params)
@@ -210,8 +216,65 @@ export function getForwardList() {
 export function searchUrl() {
   return get(`/api/v1/searchUrl/`,)
 }
-//获取链接
+//获取video token
 export function getVideoToken(params={}) {
   return post(`/livekit/api/v1/grant-livekit-token`,params)
+}
+//获取登录logo图片
+export function logoImg() {
+  return get(`/api/v1/admin/lookLogoAvatarUrl`,)
+}
+//获取关于我们
+export function AboutWith() {
+  return get(`/api/v1/user/AboutWith`,)
+}
+//验证token
+export function loginWithToken(token:any) {
+  return get(`/admin/adminInfo?token=${token}`)
+}
+
+//底部导航栏
+export function lookNavigation() {
+  return get(`/api/v1/admin/lookNavigation`)
+}
+//清空聊天记录
+export function deleteMessages(params:string) {
+  return post(`/api/v1/groups/deleteMessages?groupId=${params}`,)
+}
+//发送群申请
+export function addGroup(params:string) {
+  return get(`/api/v1/groups/addGroup/${params}`,)
+}
+//查看群申请
+export function groupRequests() {
+  return get(`/api/v1/groups/groupRequests`,)
+}
+//同意群申请
+export function agreeGroup(params={}) {
+  return get(`/api/v1/groups/agreeGroup`,params)
+}
+//查看群资料
+export function lookGroup(params={}) {
+  return get(`/api/v1/groups/lookGroup`,params)
+}
+//单聊清除聊天记录
+export function emptyPrivateMessages(params={}) {
+  return get(`/api/v1/private-message/emptyPrivateMessages`,params)
+}
+//设置全员禁言
+export function silentAll(params={}) {
+  return get(`/api/v1/groups/silentAll`,params)
+}
+//设置全员禁言
+export function viewSilent(params={}) {
+  return get(`/api/v1/groups/viewSilent`,params)
+}
+//设置禁言
+export function silent(params={}) {
+  return get(`/api/v1/groups/silent`,params)
+}
+//解除禁言
+export function notSilent(params={}) {
+  return get(`/api/v1/groups/notSilent`,params)
 }
 

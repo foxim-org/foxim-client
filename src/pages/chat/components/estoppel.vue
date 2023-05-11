@@ -6,7 +6,7 @@
         </div>
         <div class="center">
             <div class="group">
-                <van-collapse v-model="activeNames">
+                <van-collapse v-model="activeNames" @change = 'changeCheck'>
                     <van-collapse-item title="全员禁言" name="1" style="font-size: 16px;">
                         <template #right-icon>
                             <van-switch v-model="checked1" active-color="#4A8AFF"
@@ -16,7 +16,7 @@
 
                 </van-collapse>
             </div>
-            <div class="group" v-if="!checked1">
+            <!-- <div class="group" v-if="!checked1">
                 <van-collapse v-model="activeNames">
                     <van-collapse-item title="禁言成员" name="1" style="font-size: 16px;">
                         <template #right-icon>
@@ -26,54 +26,108 @@
                     </van-collapse-item>
 
                 </van-collapse>
-            </div>
+            </div> -->
             <div class="group" v-if="!checked1">
                 <van-collapse v-model="activeNames">
-                    <van-collapse-item title="禁言成员列表" name="1" style="font-size: 16px;">
+                    <van-collapse-item title="成员列表" name="1" style="font-size: 16px;">
                         <template #right-icon>
                         </template>
                     </van-collapse-item>
                     <div class="list_user">
-                        <div class="item">
-                            <van-image width="35" height="35" src="https://fastly.jsdelivr.net/npm/@vant/assets/cat.jpeg"
+                        <div class="item" v-for="item in list " :key="item.id">
+                            <van-image width="35" height="35" :src='item.avatarUrl?item.avatarUrl:info.avatarUrl'
                                 round />
-                            <p style="margin-left: 20px; flex: 1;">名字</p>
-                            <img width="24" height="24" :src="imgSrc" @click="change" />
+                            <p style="margin-left: 20px; flex: 1;">{{ item.username }}</p>
+                            <img width="24" height="24" :src='imgSrc' @click="change(item)" v-show="item.isSilencedTo?imgSrc='/src/assets/image/66680.png':'/src/assets/image/21974.png'" />
                         </div>
                     </div>
                 </van-collapse>
             </div>
         </div>
-        <div class="footer" v-if="!checked1">
+        <!-- <div class="footer" v-if="!checked1">
             <span>
                 解除禁言
             </span>
             <span style="background-color: #fff; border: 2px solid #44B5FF; color: #44B5FF;">
                 取消禁言
             </span>
-        </div>
+        </div> -->
     </div>
 </template>
 
 <script setup>
-import { ref } from "vue"
+import { ref,onMounted } from "vue"
+import { findGroupMember,silentAll,lookGroup,viewSilent,silent,
+ notSilent 
+} from "@/request/http.api";
+import { Toast } from "vant";
 const onClickLeft = () => history.back();
-const checked1 = ref(true);
-const checked2 = ref(true);
-const checked3 = ref(true);
-const checked4 = ref(false);
-const checked5 = ref(true);
-const checked6 = ref(true);
-const checked7 = ref(true);
-const checked8 = ref(false);
+const checked1 = ref(false);
+const  id = { groupId: localStorage.getItem("groupId")}
+const list = ref([])
+const info = JSON.parse(localStorage.getItem("info"))
 let imgSrc = ref("/src/assets/image/21974.png")
-const change = function () {
+const change = function (item) {
     if (imgSrc.value == "/src/assets/image/21974.png") {
         imgSrc.value = "/src/assets/image/66680.png"
+        lient(item)
     } else {
         imgSrc.value = "/src/assets/image/21974.png"
+         noLient(item)
     }
 }
+const lient = async(user)=>{
+  let params = {
+    groupId:user.groupId,
+    toId:user.userId
+  }
+  try {
+    const res = await silent(params)
+    Toast.success(res.data)
+  } catch (error) {
+    Toast.fail(error.response.data)
+  }
+  
+}
+const noLient = async(user)=>{
+    let params = {
+    groupId:user.groupId,
+    toId:user.userId
+  }
+  try {
+    const res = await notSilent(params)
+    Toast.success(res.data)
+  } catch (error) {
+    Toast.fail(error.response.data)
+  }
+  
+}
+const groupLook = async()=>{
+     const res = await lookGroup(id)
+     checked1.value = res.data.isSilencedToAll 
+}
+const userList = async()=>{
+  const res = await viewSilent(id)
+      list.value = res.data
+
+}
+
+const allSilent = async()=>{
+    const res = await silentAll(id)
+      console.log(res);
+}
+const changeCheck = ()=>{
+  console.log(checked1.value);
+  if(checked1.value){
+    allSilent()
+  }else{
+    allSilent()
+  }
+}
+onMounted(()=>{
+     userList()
+    groupLook()
+})
 </script>
 
 <style lang="scss" scoped>
@@ -139,7 +193,7 @@ const change = function () {
                     display: flex;
                     align-items: center;
                     margin-left: 20px;
-
+                     margin-top: 20px;
                     p {
                         flex: 1;
                     }

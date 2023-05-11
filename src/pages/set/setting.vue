@@ -52,7 +52,7 @@ let foxCode = ref("")
 foxCode.value = JSON.parse(localStorage.getItem("info")).foxCode
 //信息
 let name = ref("")
-name.value = JSON.parse(localStorage.getItem('info')).displayName ? JSON.parse(localStorage.getItem('info')).displayName : "未设置"
+name.value = JSON.parse(localStorage.getItem('info')).username ? JSON.parse(localStorage.getItem('info')).username : "未设置"
 let bio = ref("")
 bio.value = JSON.parse(localStorage.getItem('info')).bio ? JSON.parse(localStorage.getItem('info')).bio : "未设置"
 let mobile = ref("")
