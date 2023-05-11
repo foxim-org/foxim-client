@@ -380,7 +380,7 @@ import { defineComponent } from "vue";
 import appstore from "@/store/index";
 export default defineComponent({
   beforeRouteEnter(to, from, next) {
-    console.log(from);
+    console.log(to,from);
     if (from.path === "/login") {
       next(() => {
         const stores = appstore();

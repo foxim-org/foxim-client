@@ -374,6 +374,7 @@
                                       width="40"
                                       height="40"
                                     />
+                                    
                                   </div>
                                 </div>
                               </div>
@@ -470,6 +471,7 @@
                                 >
                                   <div class="z-line-1">
                                     {{ item.fileName }}
+                                 
                                   </div>
                                   <van-image
                                     :src="
@@ -536,12 +538,17 @@
                   </div>
                 </div>
               </div>
+            
             </DynamicScrollerItem>
           </template>
+          
         </DynamicScroller>
+          
       </van-checkbox-group>
+    
     </div>
-    <div class="footer" v-show="!isForward">
+      <div class="forbid" v-show="forbid ||userForbid ">全员禁言中</div>
+    <div class="footer" v-if="!isForward && !forbid && !userForbid">
       <div class="z-flex-justify-between" style="padding: 5px 0">
         <img
           src="../../../assets/image/66602.png"
@@ -558,7 +565,9 @@
             @keyup.enter="changeSend"
             v-show="voice"
             @update:model-value="changeUpdate($event)"
+           
           />
+     
           <div style="-webkit-touch-callout: none; -webkit-user-select: none">
             <van-button
               v-show="!voice"
@@ -639,11 +648,57 @@
     </div>
     <div
       class="foot_send z-flex-column-center"
-      v-show="isForward"
+      v-if="isForward"
       @click="toForward"
     >
       <img src="@/assets/image/pageChat/d08.png" alt="" />
       转发
+    </div>
+   <div class="footer" v-if=" forbid || userForbid">
+      <div class="z-flex-justify-between" style="padding: 5px 0">
+        <img
+          src="../../../assets/image/66602.png"
+          class="isAudio"
+      
+        />
+
+        <van-cell-group inset style="width: 80%">
+          <van-field
+            v-model="value"
+            placeholder="全员禁言中"
+           :disabled = 'true'
+            v-show="voice"
+      
+           
+          />
+        
+     
+        </van-cell-group>
+     
+        <div>
+            <img
+              src="../../../assets/image/66601.png"
+              class="img"
+              style="margin-right: 6px; vertical-align: middle"
+             
+            />
+          </div>
+        <img
+          v-show="isImg"
+          src="../../../assets/image/13595.png"
+          class="img"
+     
+          style="margin-right: 9px"
+        />
+        <img
+          v-show="!isImg"
+          src="../../../assets/image/pageChat/send.png"
+          class="img"
+       
+          style="margin-right: 9px"
+        />
+      </div>
+     
     </div>
     <div
       style="width: 100%; height: 270px; margin-top: 50px"
@@ -719,6 +774,8 @@
     groupName: '',
     groupUserSize: '',
   })
+  const forbid = ref(false) //群禁言
+const userForbid = ref(false) //个人禁言
   const stopAudio = ref({})
   const imgUrl = ref([
     {
@@ -1159,6 +1216,7 @@ const changeItem = (text) => {
       $type: '',
       imgUrl: null as any,
       videoUrl: null as any,
+      msgStatus:0
     }
     if (route.query.info == 'group' && value.value != '') {
       msg.$type = 'group'
@@ -1168,8 +1226,9 @@ const changeItem = (text) => {
       send(`group/${route.query.id}`, JSON.stringify(msg))
     }
     if (route.query.info == 'user' && value.value != '') {
-      console.log(msg)
+       
       msg.groupId = ''
+      msg.username = ''
       send(`private/${route.query.id}`, JSON.stringify(msg))
        messages.value.push(msg)
        console.log(messages.value);
@@ -1214,10 +1273,18 @@ const changeItem = (text) => {
   //   { deep: true }
   // );
 
-  onMounted(() => {
+onMounted(() => {
+  
+  
+  if (route.query.info == 'group') {
+     //获取是否全员禁言
+     
+  }
+   //全部已读
+
     chatInfo()
     historyChat()
-    messages.value = []
+    // messages.value = []
   })
 </script>
 
@@ -1371,6 +1438,12 @@ const changeItem = (text) => {
         
         }
       }
+    }
+    .forbid{
+      text-align: center;
+      padding: 10px 0;
+      background-color: #f3f5f8ff;
+      color:#3e78fe
     }
     .van-cell {
       background: #eee;

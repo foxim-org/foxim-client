@@ -133,7 +133,9 @@ const appStore = defineStore("app", {
       } 
      },
      isUserList(list: { userId: string; }[],data: { userId: string; }){
-      const ide = list.findIndex((i: { userId: string; })=>i.userId=== data.userId)
+       const ide = list.findIndex((i: { userId: string; }) => i.userId === data.userId)
+       console.log(ide);
+       
       if(ide != -1){
        list.push(data)
       } 

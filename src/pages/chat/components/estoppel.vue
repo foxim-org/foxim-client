@@ -6,7 +6,7 @@
         </div>
         <div class="center">
             <div class="group">
-                <van-collapse v-model="activeNames" @change = 'changeCheck'>
+                <van-collapse  @change = 'changeCheck'>
                     <van-collapse-item title="全员禁言" name="1" style="font-size: 16px;">
                         <template #right-icon>
                             <van-switch v-model="checked1" active-color="#4A8AFF"
@@ -28,7 +28,7 @@
                 </van-collapse>
             </div> -->
             <div class="group" v-if="!checked1">
-                <van-collapse v-model="activeNames">
+                <van-collapse >
                     <van-collapse-item title="成员列表" name="1" style="font-size: 16px;">
                         <template #right-icon>
                         </template>
@@ -119,12 +119,14 @@ const groupLook = async()=>{
 const userList = async()=>{
   const res = await viewSilent(id)
       list.value = res.data
-
+    
 }
 
-const allSilent = async()=>{
+const allSilent = async () => {
+    
     const res = await silentAll(id)
-      console.log(res);
+    console.log(res,222);
+    Toast.success(res.data)
 }
 const changeCheck = ()=>{
   console.log(checked1.value);
