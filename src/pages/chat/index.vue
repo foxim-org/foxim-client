@@ -28,10 +28,6 @@
               建立群组
             </div>
             <van-divider />
-            <!-- <div class="z-t-c btn_text" @click="toModule('/closeChat')">
-              建立密聊
-            </div>
-            <van-divider /> -->
             <div
               class="z-t-c"
               @click="close"
@@ -465,23 +461,22 @@ const Recent = async () => {
     }
   });
 };
-
+const msgValue = ref({})
 watch(
   () => obj.value,
   (val) => {
     nextTick(() => {
-    
+      console.log(val);
+      if(val.msgStatus == '0'){
+        msgValue.value = val
+      }
       if (val.$type == "GROUP-MESSAGE") {
-       
         if (val.groupName != "") {
-        
           ReplaceList(val, groupList.value);
            audio.value.play()
         }
       } else if (val.$type == "") {
-     
         if (val.groupName == "" || !val.groupName) {
-       
           ReplaceUserList(val, Finalist.value);
           audio.value.play()
         }
@@ -558,12 +553,16 @@ const showAdd = () => {
   NewAdd.value = true;
 };
 const changeChat = (id, name, info, msg,url) => {
-    
-      msg.userId = users.value.id
       console.log(msg);
+      msg.userId = users.value.id
+      let msgStatus = {
+          $type: 'stats',
+          msgId:msgValue.msgId ,
+          msgStatus:'1'
+        }
      if(info === 'user'){
+      send(`private/${msg.contactId}`, JSON.stringify(msgStatus))
       
-       send(`private/${msg.contactId}/read`, JSON.stringify(msg));
      }else{
       console.log(msg,123);
       send(`group/${msg.groupId}/read`, JSON.stringify(msg));

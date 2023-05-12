@@ -69,6 +69,7 @@ const appStore = defineStore("app", {
       
         if(message.$type== ''){
           this.isUserList(this.messages,message)  
+          this.obj = message
         }else if(message.$type === 'BURN'){
           this.isUserList(this.messages,message)
         } else if(message.$type=== 'GROUP-MESSAGE'){
@@ -80,6 +81,8 @@ const appStore = defineStore("app", {
           router.push({name:'videoCall',params:{id:message.userId,isCall:1,cid:message.contactId}})
         }else if(message.$type == 'videoNotice'){
             this.notice = message
+        }else if(message.$type == 'stats'){
+              this.obj = message
         }
         
         // else if(message.$type== 'recall'){
@@ -134,10 +137,16 @@ const appStore = defineStore("app", {
      },
      isUserList(list: { userId: string; }[],data: { userId: string; }){
        const ide = list.findIndex((i: { userId: string; }) => i.userId === data.userId)
-       console.log(ide);
+   
        
       if(ide != -1){
-       list.push(data)
+         if(data.msgStatus == '1'){
+          return
+         }else{
+          list.push(data)
+         }
+        
+      
       } 
      },
 

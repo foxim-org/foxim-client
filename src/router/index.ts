@@ -199,6 +199,11 @@ const Router = createRouter({
       path: '/videoCall',
       component: () => import('../pages/chat/components/videoCall.vue'),
     },
+    {
+      name: 'audioCall',
+      path: '/audioCall',
+      component: () => import('../pages/chat/components/audioCall.vue'),
+    },
     //转发目标
     {
       name: 'target',

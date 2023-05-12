@@ -55,6 +55,7 @@
               :item="item"
               :active="active"
               :size-dependencies="[item.text]"
+            
             >
               <div>
                 <div class="chat">
@@ -185,7 +186,8 @@
                               @touchstart.native="gtouchstart(item.id)"
                               @touchend="end()"
                             >
-                            <!-- <span style="margin-right: 20px;">未读</span> -->
+                            <span style="margin-right: 20px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
+                         
                               <div
                                 class="user_msg"
                                 v-show="
@@ -378,6 +380,7 @@
                                   </div>
                                 </div>
                               </div>
+                              
                               <div
                                 class="row_msg"
                                 v-show="
@@ -390,6 +393,7 @@
                               >
                                 {{ item.text }}
                               </div>
+                            
                               <div class="row_msg" v-show="item.audio != null">
                                 <div @click.prevent="handlePlayAudio(index)">
                                   <div
@@ -482,6 +486,7 @@
                                   />
                                 </div>
                               </div>
+                              
                               <div
                                 class="row_msg"
                                 v-show="
@@ -492,8 +497,9 @@
                                   item.text != '[文件消息]'
                                 "
                               >
-                                {{ item.text }}
+                                {{ item.text }}222
                               </div>
+                              <span style="margin-left: 20px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
                               <div class="row_msg" v-show="item.audio != null">
                                 <div
                                   @click.prevent="
@@ -718,7 +724,26 @@
         />
       </div>
     </van-overlay>
+    <van-popup v-model:show="NewAdd" position="bottom">
+            <div
+              class="z-t-c btn_text"
+              style="padding-top: 10px"
+              @click="toModule('/videoCall')"
+            >
+              视频通话
+            </div>
+            <van-divider />
+            <div class="z-t-c btn_text" @click="toModule('/audioCall')">
+              语音通话
+            </div>
+            <van-divider />
+        
+          </van-popup>
   </div>
+     <div class="foter">
+      <div class="item"></div>
+     </div>
+   
 </template>
 
 <script setup lang="ts">
@@ -732,9 +757,11 @@
     geiMessages,
     getGroupMessage,
     fileUpload,
+    lookGroup,
+    lookGroupUserSilent
   } from '@/request/http.api'
   import wave from '@/components/wave.vue'
-
+  import { useIntersectionObserver } from '@vueuse/core'
   import clipboard3 from 'vue-clipboard3'
   import utils from '@/utils'
   import V3Emoji from 'vue3-emoji'
@@ -743,15 +770,18 @@
   const router = useRouter()
   const route = useRoute()
   const value = ref('')
+ 
   const store = appStore()
   const userId = JSON.parse(localStorage.getItem('info') || '{}')
-  const { messages } = storeToRefs(store)
+  const { messages,obj } = storeToRefs(store)
   const { send } = store
+  const NewAdd = ref(false)
   const loop: any = ref(0)
   const nanoId = nanoid()
   const groupImg = ref('')
   const voice = ref(true)
   const audios = ref(null) as any
+  const room = ref<any>(null)
   const isImg = ref(true)
   const show = ref(false)
   const timeOutEvent = ref(0)
@@ -767,9 +797,14 @@
   const startX = ref(null)
   const startY = ref(null)
   const isRecording = ref(false)
+  const itemDiv = document.querySelector('vue-recycle-scroller__item-view');
   const { toClipboard } = clipboard3()
   const result = ref([])
   const typeText = ref('')
+  const domEle  = ref(null) as any
+ 
+ 
+  
   const users = ref({
     groupName: '',
     groupUserSize: '',
@@ -812,6 +847,40 @@ const userForbid = ref(false) //个人禁言
     },
   ])
   const isForward = ref(false)
+  
+   
+
+  //音视频跳转
+  const toModule = (key:string) => {
+   if(key == '/videoCall'){
+    let time = new Date().getTime()
+      let msg = {
+      createdAt: time,
+      userId: userId.id,
+      contactId: route.query.id,
+      groupId: route.query.id,
+      username: userId.username,
+      $type: 'videoCall',
+     
+    }
+    send(`private/${route.query.id}`, JSON.stringify(msg))
+     router.push({name:'videoCall',params:{id:msg.userId,isCall:0,cid:msg.contactId}})
+   }else{
+    let time = new Date().getTime()
+      let msg = {
+      createdAt: time,
+      userId: userId.id,
+      contactId: route.query.id,
+      groupId: route.query.id,
+      username: userId.username,
+      $type: 'videoCall',
+     
+    }
+    send(`private/${route.query.id}`, JSON.stringify(msg))
+     router.push({name:'audioCall',params:{id:msg.userId,isCall:0,cid:msg.contactId}})
+   }
+  NewAdd.value = false;
+};
   //转发显示
   const clickForward = () => {
     isForward.value = !isForward.value
@@ -828,18 +897,7 @@ const userForbid = ref(false) //个人禁言
 }
 const changeItem = (text) => {
     if(text == '视频通话'){
-      let time = new Date().getTime()
-      let msg = {
-      createdAt: time,
-      userId: userId.id,
-      contactId: route.query.id,
-      groupId: route.query.id,
-      username: userId.username,
-      $type: 'videoCall',
-     
-    }
-    send(`private/${route.query.id}`, JSON.stringify(msg))
-     router.push({name:'videoCall',params:{id:msg.userId,isCall:0,cid:msg.contactId}})
+      NewAdd.value = true
     }
      
   }
@@ -1074,7 +1132,6 @@ const changeItem = (text) => {
       audioTime: '',
       audio: null,
       avatarUrl: userId.avatarUrl,
-      badge: 1,
       $type: '',
       imgUrl: null as any,
       videoUrl: null as any,
@@ -1144,7 +1201,7 @@ const changeItem = (text) => {
   const end = () => {
     clearTimeout(loop.value)
   }
-  const room = ref<any>(null)
+
   //聊天界面信息
   const chatInfo = async () => {
     if (route.query.info == 'group') {
@@ -1231,13 +1288,50 @@ const changeItem = (text) => {
       msg.username = ''
       send(`private/${route.query.id}`, JSON.stringify(msg))
        messages.value.push(msg)
-       console.log(messages.value);
+      
        
     }
     value.value = ''
     isImg.value = true
   }
-
+  //查看群是否全局禁言
+  const noforbid = async()=>{
+    const res = await lookGroup({groupId:route.query.id})
+    forbid.value = res.data.isSilencedToAll
+    console.log(forbid.value);
+    
+  }
+const userNoForbid = async()=>{
+  let params = {
+    groupId:route.query.id,
+    SilentUserId:userId.id
+  }
+    const res =await lookGroupUserSilent(params)
+   
+    userForbid.value = res.data.isSilencedTo
+    
+}  
+// const domScorll = ()=>{
+//   setTimeout(()=>{
+//     domEle.value = document.querySelectorAll('.vue-recycle-scroller__item-view')
+//     domEle.value.forEach(item=>{
+//       const { resume } = useIntersectionObserver(
+//     item,
+//   ([{ isIntersecting }],observerElement) => {
+ 
+//     if(isIntersecting){
+//    console.log(isIntersecting);
+//     }
+//   },
+  
+// )
+// onMounted(() => {
+//       resume()
+//     })
+//     })
+ 
+//   },300)
+// }
   watch(
     newState,
     (val, news) => {
@@ -1251,37 +1345,50 @@ const changeItem = (text) => {
           room.value.lastElementChild.lastElementChild
             .getElementsByTagName('div')[1]
             .scrollIntoView(false)
+       
         }
+        room.value.lastElementChild.lastElementChild
+            .getElementsByTagName('div')[1]
+            .scrollIntoView(false)
       })
     },
     { deep: true }
   )
-  // watch(
-  //   () => isCollapse.value,
-  //   (val) => {-
-  //     nextTick(() => {
-  //       if (val) {
-  //         room.value.style.height = 57 + "vh";
-  //         room.value.lastElementChild
-  //           .getElementsByTagName("div")[1]
-  //           .scrollIntoView(false);
-  //       } else {
-  //         room.value.style.height = 81 + "vh";
-  //       }
-  //     });
-  //   },
-  //   { deep: true }
-  // );
-
+  watch(
+    () => obj.value,
+    (val) => {-
+      nextTick(() => {
+        // console.log(val,222);
+        let msg = {
+          $type: 'stats',
+          msgId:val.msgId ,
+          msgStatus:'1'
+        }
+        messages.value.forEach(item=>{
+          
+          if(item.msgId == val.msgId && val.msgStatus == '0'){
+            item.msgStatus = 1
+            send(`private/${route.query.id}`, JSON.stringify(msg))
+          }else{
+               item.msgStatus = 1
+          }
+          
+        }) 
+       
+      });
+    },
+    { deep: true }
+  );
+   
 onMounted(() => {
-  
-  
   if (route.query.info == 'group') {
      //获取是否全员禁言
-     
+     noforbid()
+     userNoForbid()
   }
-   //全部已读
-
+ 
+  // domScorll()
+  
     chatInfo()
     historyChat()
     // messages.value = []

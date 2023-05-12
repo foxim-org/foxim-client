@@ -142,7 +142,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onActivated,watch } from "vue";
+import { ref, onMounted, onActivated,watch,nextTick } from "vue";
 import { useRouter, onBeforeRouteUpdate } from "vue-router";
 import { findMyFriends, findGroup, friReList, agreeFri,groupRequests } from "@/request/http.api.ts";
 import { IndexBar, IndexAnchor } from "vant";
@@ -151,7 +151,8 @@ import appStore from "@/store/index";
 import { storeToRefs } from "pinia";
 
 const store = appStore();
-const { abc } = storeToRefs(store);
+const { abc,obj } = storeToRefs(store);
+const { send } = store;
 const show = ref(false);
 const NewAdd = ref(false);
 const value = ref("");
@@ -165,6 +166,7 @@ const userList = ref([]);
 const groupList = ref([]);
 const addList = ref([]);
 const groupAdd = ref([])
+const msgValue = ref({})
 //新增加
 const btnUser = () => {
   router.push("/chatContact");
@@ -224,6 +226,12 @@ const share = () => {
 };
 const toChat = (item, info) => {
   console.log(item);
+  let msgStatus = {
+          $type: 'stats',
+          msgId:msgValue.msgId ,
+          msgStatus:'1'
+        }
+        send(`private/${item.id}`, JSON.stringify(msgStatus))
   router.push({
     path: "pageChat",
     query: { id: item.id, name: item.pinyinUserName, info, url: item.avatarUrl },
@@ -232,12 +240,23 @@ const toChat = (item, info) => {
 const toChatGroup = (item, info) => {
 
   localStorage.setItem("groupId", item.id);
+
   router.push({
     path: "pageChat",
     query: { id: item.id, name: item.name, info },
   });
 };
-
+watch(
+  () => obj.value,
+  (val) => {
+    nextTick(() => {
+      console.log(val);
+      if(val.msgStatus == '0'){
+        msgValue.value = val
+      }
+    });
+  }
+);
 //编辑已读页面
 const toEditor = () => {
   router.push("/editor");

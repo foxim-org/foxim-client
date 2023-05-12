@@ -254,7 +254,7 @@ export function agreeGroup(params={}) {
   return get(`/api/v1/groups/agreeGroup`,params)
 }
 //查看群资料
-export function lookGroup(params={}) {
+export function lookGroup(params = {}) {
   return get(`/api/v1/groups/lookGroup`,params)
 }
 //单聊清除聊天记录
@@ -277,4 +277,7 @@ export function silent(params={}) {
 export function notSilent(params={}) {
   return get(`/api/v1/groups/notSilent`,params)
 }
-
+//查看单个用户是否禁言
+export function lookGroupUserSilent(params={}) {
+  return get(`/api/v1/groups/lookGroupUserSilent`,params)
+}
