@@ -30,10 +30,11 @@ const appStore = defineStore("app", {
     }, //创建群权限
     friendListgroup:[],
     obj:{},
-    abc:{},
+    cpMsg:{},
     token: localStorage.getItem("token") || "",
     groupId:"",
-    notice:{}
+    notice:{},
+
   }),
   actions: {
  
@@ -76,7 +77,7 @@ const appStore = defineStore("app", {
            this.isIdList(this.messages,message)  
         }else if(message.type== 'addFriend'){
           // this.obj = message
-          this.abc = message
+          this.cpMsg = message
         }else if(message.$type == "videoCall"){
           router.push({name:'videoCall',params:{id:message.userId,isCall:1,cid:message.contactId}})
         }else if(message.$type == 'videoNotice'){

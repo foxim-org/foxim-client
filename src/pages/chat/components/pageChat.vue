@@ -185,8 +185,9 @@
                             <div
                               @touchstart.native="gtouchstart(item.id)"
                               @touchend="end()"
+                              style="display: flex;align-items: center;"
                             >
-                            <span style="margin-right: 20px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
+                            <span style="margin-right: 10px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
                          
                               <div
                                 class="user_msg"
@@ -258,7 +259,7 @@
                       <div class="chat-recv">
                         <div
                           class="z-flex-align-center"
-                          style="margin-right: 10px"
+                        
                         ></div>
 
                         <div>
@@ -431,6 +432,7 @@
                               v-else
                               @touchstart.native="gtouchstart(item.id)"
                               @touchend="end()"
+                              class="z-flex-align-center"
                             >
                               <div
                                 v-if="
@@ -499,7 +501,7 @@
                               >
                                 {{ item.text }}222
                               </div>
-                              <span style="margin-left: 20px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
+                              <span style="margin-left: 10px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
                               <div class="row_msg" v-show="item.audio != null">
                                 <div
                                   @click.prevent="
@@ -1511,6 +1513,7 @@ onMounted(() => {
           padding: 22px 32px;
           font-weight: 400;
           word-break: break-all;
+          flex: 1;
         }
 
         .right_text {
@@ -1531,6 +1534,7 @@ onMounted(() => {
           border-radius: 0px 24px 24px 24px;
           margin-left: 16px;
           color: #fff;
+          flex: 1;
         }
 
         .row_name {

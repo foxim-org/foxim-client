@@ -16,10 +16,16 @@
             v-for="item in list" :key="item.id"
              :to="item.routing">
                 <template #icon="props">
+                    <van-badge :content="cpMsg.msgCount" v-if="item.name == '联络人'"/>
                     <img :src="props.active ? item.imgBright :item.img"  />
                 </template>
                 {{ item.name }}</van-tabbar-item>
-                
+                   <!-- <van-tabbar-item icon="friends-o" to="/contact" @click="kong">联络人
+                <template #icon="props">
+                    <van-badge :content="infoList.length" v-if="infoList.length"/>
+                    <img :src="props.active ? utils.get_img_url('67328 (5).png') : utils.get_img_url('67328 (1).png')"  />
+                </template>
+            </van-tabbar-item> -->
             <!-- <van-tabbar-item icon="friends-o" to="/contact" @click="kong">联络人
                 <template #icon="props">
                     <van-badge :content="infoList.length" v-if="infoList.length"/>
@@ -50,7 +56,7 @@ import { storeToRefs } from "pinia";
 import {Room} from 'livekit-client'
 import {lookNavigation} from '@/request/http.api'
 const store = appStore();
-const { abc } = storeToRefs(store);
+const { cpMsg } = storeToRefs(store);
 const route = useRoute()
 const { connect } = store
 const room = new Room()
@@ -75,14 +81,14 @@ onMounted(() => {
  
 })
 let infoList=ref([])
-watch(
-  ()=>abc.value,
-  (val)=>{
-    console.log(val,1111);
-    infoList.value.push(val)
-    console.log(infoList.value);
-  }
-)
+// watch(
+//   ()=>abc.value,
+//   (val)=>{
+//     console.log(val,1111);
+//     infoList.value.push(val)
+//     console.log(infoList.value);
+//   }
+// )
 const kong=function(){
     infoList.value=[]
 }

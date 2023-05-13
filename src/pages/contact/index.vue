@@ -151,7 +151,7 @@ import appStore from "@/store/index";
 import { storeToRefs } from "pinia";
 
 const store = appStore();
-const { abc,obj } = storeToRefs(store);
+const { cpMsg,obj } = storeToRefs(store);
 const { send } = store;
 const show = ref(false);
 const NewAdd = ref(false);
@@ -228,7 +228,7 @@ const toChat = (item, info) => {
   console.log(item);
   let msgStatus = {
           $type: 'stats',
-          msgId:msgValue.msgId ,
+          msgId:msgValue.value.msgId ,
           msgStatus:'1'
         }
         send(`private/${item.id}`, JSON.stringify(msgStatus))
@@ -288,15 +288,8 @@ const groupInfo = async ()=>{
   console.log(res,22);
   groupAdd.value = res.data
 }
-let infoList=ref([])
-watch(
-  ()=>abc.value,
-  (val)=>{
-    console.log("监听");
-    addListfun()
-    
-  }
-)
+
+
 onActivated(() => {
   getGroup();
   list();

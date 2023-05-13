@@ -555,9 +555,10 @@ const showAdd = () => {
 const changeChat = (id, name, info, msg,url) => {
       console.log(msg);
       msg.userId = users.value.id
+      console.log(msgValue.value.msgId);
       let msgStatus = {
           $type: 'stats',
-          msgId:msgValue.msgId ,
+          msgId:msgValue.value.msgId ,
           msgStatus:'1'
         }
      if(info === 'user'){
