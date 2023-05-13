@@ -38,8 +38,14 @@
                             <van-image width="35" height="35" :src='item.avatarUrl?item.avatarUrl:info.avatarUrl'
                                 round />
                             <p style="margin-left: 20px; flex: 1;">{{ item.username }}</p>
-                       
-                            <img width="24" height="24" :src="item.isSilencedTo?imgsrc1:imgsrc" @click="change(item)"  />
+                            <van-image
+                                
+                                    width="24"
+                                    height="24"
+                                    @click="change(item)"
+                                    :src="item.isSilencedTo?utils.get_img_url('66680.png'):utils.get_img_url('21974.png')"
+                                  />
+                            <!-- <img width="24" height="24" :src="item.isSilencedTo?imgsrc1:imgsrc" @click="change(item)"  /> -->
                         </div>
                     </div>
                 </van-collapse>
@@ -66,9 +72,10 @@ const onClickLeft = () => history.back();
 const checked1 = ref(false);
 const  id = { groupId: localStorage.getItem("groupId")}
 const list = ref([])
+import utils from '@/utils'
 const info = JSON.parse(localStorage.getItem("info"))
-const imgsrc = ref('/src/assets/image/21974.png')
-const imgsrc1 = ref('/src/assets/image/66680.png')
+const imgsrc = ref('../../../assets/image/21974.png')
+const imgsrc1 = ref('../../../assets/image/66680.png')
 const change = function (item) {
      if(  item.isSilencedTo){
         item.isSilencedTo = false
