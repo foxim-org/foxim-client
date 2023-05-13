@@ -109,6 +109,7 @@
                   <p>{{ item.friendName }}</p>
                 </div>
                 <div class="btn" style="margin-right: 20px;"
+                
                   @click="router.push({ path: '/personInfo', query: { id: item.userId } })">查看</div>
               </div>
             </div>

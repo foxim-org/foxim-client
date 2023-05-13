@@ -270,7 +270,7 @@ export function viewSilent(params={}) {
   return get(`/api/v1/groups/viewSilent`,params)
 }
 //设置禁言
-export function silent(params={}) {
+export function silent(params={}) { 
   return get(`/api/v1/groups/silent`,params)
 }
 //解除禁言
@@ -280,4 +280,7 @@ export function notSilent(params={}) {
 //查看单个用户是否禁言
 export function lookGroupUserSilent(params={}) {
   return get(`/api/v1/groups/lookGroupUserSilent`,params)
+}
+export function checkFriends(params:string) {
+  return get(`/api/v1/contacts/see/${params}`)
 }

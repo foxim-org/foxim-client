@@ -9,16 +9,20 @@
   </template>
 </van-nav-bar>
 <div class="content">
-    <div class="z-flex-column">
-      <van-image  
-                            width="60"
-                            height="60"
-                            src="static/20230407163657.png"
-                          />
-                          <div class="text">名字</div>
-    </div>
+  <div class="z-flex-column">
+    
+    <van-image  
+                        width="60"
+                        height="60"
+                        :src="frList.head?frList.head:info.moRenUrl"
+                        fit="cover"
+                      />
+
+
+                      <div class="text">{{ frList.friendName}}</div>
 </div>
-<div class="time">{{ isCallAnswered?'':text }}</div>
+</div>
+<div class="time">{{ text }}</div>
 <div class="footer">
   <div class="img">
     <van-image
@@ -69,6 +73,12 @@ const room = new Room()
 const localVideoContainer = ref()
 const remoteVideoContainer = ref()
 const isCallAnswered = ref(false)
+const frList = ref({})
+const checkFr = async()=>{
+   const res = await checkFriends(route.params.cid)
+   frList.value = res.data
+   console.log(res);
+}
 const answerCall = async () => {
    text.value = '连接中'
    let msg = {
@@ -94,8 +104,11 @@ const hangup = ()=>{
     contactId:route.params.cid
    }
   send(`private/${msg.contactId}`, JSON.stringify(msg));
-  room.disconnect()
+  text.value = '已挂断'
+  setTimeout(()=>{
+    room.disconnect()
    router.go(-1)
+  },600)
  
    }
 const connection = async()=>{
@@ -156,7 +169,7 @@ const leftRouter = ()=>{
    )
   onMounted(()=>{
     console.log(route.params.isCall);
-    // readonlyToken()
+    checkFr()
   })
   onUnmounted(()=>{
    

@@ -1,7 +1,6 @@
 <template>
   <div class="videoCall"  ref='remoteVideoContainer'
-  
-  :style="isCallAnswered ?{height:'0vh'}:{height:'100vh'}"
+  style="height:100vh;"
   >
     <div>
       <van-nav-bar :border="false">
@@ -11,15 +10,19 @@
 </van-nav-bar>
 <div class="content">
     <div class="z-flex-column">
-      <van-image  
+    
+        <van-image  
                             width="60"
                             height="60"
-                            src="static/20230407163657.png"
+                            :src="frList.head?frList.head:info.moRenUrl"
+                            fit="cover"
                           />
-                          <div class="text">名字</div>
+   
+    
+                          <div class="text">{{ frList.friendName}}</div>
     </div>
 </div>
-<div class="time">{{ isCallAnswered?'':text }}</div>
+<div class="time">{{ text }}</div>
 <div class="footer">
   <div class="img">
     <van-image
@@ -50,7 +53,7 @@
 
 <script setup>
 import {onMounted,ref,onUnmounted,watch,nextTick} from "vue"
-import {getVideoToken} from '@/request/http.api'
+import {getVideoToken,checkFriends} from '@/request/http.api'
 import utils from "@/utils";
 import appStore from "@/store/index";
 import { storeToRefs } from 'pinia'
@@ -65,11 +68,17 @@ const { send } = store
 let str = route.params.isCall
 let num = Number(str)
 const isCalls = ref(Boolean(num)) 
-const text = ref('连接视频通话中...')
+const text = ref('连接语音通话中...')
 const room = new Room()
 const localVideoContainer = ref()
 const remoteVideoContainer = ref()
 const isCallAnswered = ref(false)
+const frList = ref({})
+const checkFr = async()=>{
+   const res = await checkFriends(route.params.cid)
+   frList.value = res.data
+   console.log(res);
+}
 const answerCall = async () => {
    text.value = '连接中'
    let msg = {
@@ -82,6 +91,7 @@ const answerCall = async () => {
    console.log(route.params);
    send(`private/${msg.userId}`, JSON.stringify(msg))
   if (!isCallAnswered.value) {
+    text.value = '通话中'
     connection()
     isCalls.value = false
   }
@@ -95,13 +105,19 @@ const hangup = ()=>{
     contactId:route.params.cid
    }
   send(`private/${msg.contactId}`, JSON.stringify(msg));
-  room.disconnect()
+  isCallAnswered.value = true
+  text.value = '已挂断'
+  setTimeout(()=>{
+    room.disconnect()
    router.go(-1)
+  },600)
+
  
    }
 const connection = async()=>{
   await readonlyToken()
-  isCallAnswered.value = true
+  isCallAnswered.value = false
+  
 }
 const leftRouter = ()=>{
   router.go(-1)
@@ -111,22 +127,18 @@ const leftRouter = ()=>{
     // publish local video and display it to localVideoContainer
     .on(RoomEvent.LocalTrackPublished, function (publication) { 
       console.log(publication,123);
-      if(publication.kind == 'audio'){
+      if(publication.kind  == 'audio'){
         const track = publication.track.attach()
-        localVideoContainer.value.appendChild(track)
-        console.log(track,444);
+        localVideoContainer.value.appendChild(track);
       }
-    
-       
-     
     })
     // subscribe remote video and display it to remoteVideoContainer
     .on(RoomEvent.TrackSubscribed, function (remoteTrack) {
-        if(remoteTrack.kind == 'audio'){
+      console.log(remoteTrack,456);
+      if(remoteTrack.kind  == 'audio'){
         const track = remoteTrack.attach()
       remoteVideoContainer.value.appendChild(track)
-        }
-     
+      }
     })
     // .on(RoomEvent.TrackUnsubscribed ,function(trackUnsubscribed){
     //   isCallAnswered.value =false
@@ -142,18 +154,19 @@ const leftRouter = ()=>{
     }
     const res = await getVideoToken(data)
     await room.connect('wss://foxim-live.lvyanhui.com', res.data.token)
- 
+    await room.localParticipant.setMicrophoneEnabled(true)
+  
   }
    watch(
     ()=>notice.value,
-    (val)=>{
+    (val)=>{  
       nextTick(()=>{
         if(val.notice === 0){
           text.value = '已挂断'
           room.disconnect()
           router.go(-1)
         }else{
-          text.value = '连接中'
+          text.value = '通话中'
            connection()
         }
       
@@ -162,6 +175,7 @@ const leftRouter = ()=>{
    )
   onMounted(()=>{
     console.log(route.params.isCall);
+    checkFr()
     // readonlyToken()
   })
   onUnmounted(()=>{

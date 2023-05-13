@@ -499,7 +499,7 @@
                                   item.text != '[文件消息]'
                                 "
                               >
-                                {{ item.text }}222
+                                {{ item.text }}
                               </div>
                               <span style="margin-left: 10px;font-size: 12px;">{{ item.msgStatus== '0'?'未读':'已读' }}</span>
                               <div class="row_msg" v-show="item.audio != null">
@@ -735,10 +735,10 @@
               视频通话
             </div>
             <van-divider />
-            <div class="z-t-c btn_text" @click="toModule('/audioCall')">
+            <div class="z-t-c btn_text" @click="toModule('/audioCall')" style="padding:8px 0">
               语音通话
             </div>
-            <van-divider />
+           
         
           </van-popup>
   </div>
@@ -875,7 +875,7 @@ const userForbid = ref(false) //个人禁言
       contactId: route.query.id,
       groupId: route.query.id,
       username: userId.username,
-      $type: 'videoCall',
+      $type: 'audioCall',
      
     }
     send(`private/${route.query.id}`, JSON.stringify(msg))

@@ -79,7 +79,9 @@ const appStore = defineStore("app", {
           // this.obj = message
           this.cpMsg = message
         }else if(message.$type == "videoCall"){
-          router.push({name:'videoCall',params:{id:message.userId,isCall:1,cid:message.contactId}})
+          router.push({name:'videoCall',params:{id:message.userId,isCall:1,cid:message.userId}})
+        }else if(message.$type == "audioCall"){
+          router.push({name:'audioCall',params:{id:message.userId,isCall:1,cid:message.userId}})
         }else if(message.$type == 'videoNotice'){
             this.notice = message
         }else if(message.$type == 'stats'){
