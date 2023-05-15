@@ -563,7 +563,7 @@ const changeChat = (id, name, info, msg,url) => {
         }
      if(info === 'user'){
       send(`private/${msg.contactId}`, JSON.stringify(msgStatus))
-      
+        send(`private/${msg.contactId}/read`, JSON.stringify(msg));
      }else{
       console.log(msg,123);
       send(`group/${msg.groupId}/read`, JSON.stringify(msg));

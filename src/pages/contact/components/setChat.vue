@@ -91,8 +91,8 @@
           @click="router.push({ name: 'groupName', query: { name: groupInfo.groupName } })" />
         <!-- <van-cell title="群聊和二维码" is-link :value="groupInfo.groupConnection" /> -->
         <van-cell @click="copyGid(groudId)" title="群ID" :value="groudId" />
-        <van-cell title="群聊链接" is-link :value="`https://foxim.lvyanhui.com/#/jumpToGroupId?groupId=${group}`"
-          @click="copy" class="yangshi" />
+        <!-- <van-cell title="群聊链接" is-link :value="`https://foxim.lvyanhui.com/#/jumpToGroupId?groupId=${group}`"
+          @click="copy" class="yangshi" /> -->
 
         <van-cell title="我在群里的昵称" is-link :value="groupInfo.username"
         @click="router.push({ name: 'groupUserName', query: { name: groupInfo.username,
